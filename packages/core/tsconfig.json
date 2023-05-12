@@ -3,12 +3,18 @@
     "module": "esnext",
     "target": "esnext",
     "declaration": true,
-    "typeRoots": [ "./node_modules/@webgpu/types"],
-    "allowJs": true,
-    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "declarationDir": "types",
+    "emitDeclarationOnly": true,
+    "stripInternal": true,
+    "noImplicitOverride": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
     "strict": true,
-    "importHelpers": true,
-    "moduleResolution": "node"
+    "incremental": false,
+    "typeRoots": [ "./node_modules/@webgpu/types"]
   },
-  "include": ["src"]
+  "include": ["src/**/*"]
 }

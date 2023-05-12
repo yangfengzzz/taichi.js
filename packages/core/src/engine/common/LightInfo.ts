@@ -67,23 +67,10 @@ export class SpotLightInfo extends LightInfo {
     influenceRadius: number,
     position: number[],
     direction: number[], // spot and dir
-    public innerConeAngle: number = 0,
-    public outerConeAngle: number = Math.PI / 4,
     castsShadow: boolean = false,
     shadow: ShadowInfo | undefined = undefined
   ) {
-    super(
-      LightType.Spot,
-      brightness,
-      color,
-      influenceRadius,
-      position,
-      direction,
-      innerConeAngle,
-      outerConeAngle,
-      castsShadow,
-      shadow
-    );
+    super(LightType.Spot, brightness, color, influenceRadius, position, direction, 0, Math.PI / 4, castsShadow, shadow);
   }
 }
 

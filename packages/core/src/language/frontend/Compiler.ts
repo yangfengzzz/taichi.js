@@ -1447,7 +1447,7 @@ class CompilingVisitor extends ASTVisitor<Value> {
     this.errorNode(node, "unresolved identifier: " + node.getText());
   }
 
-  protected visitVariableDeclaration(node: ts.VariableDeclaration): VisitorResult<Value> {
+  protected override visitVariableDeclaration(node: ts.VariableDeclaration): VisitorResult<Value> {
     let identifier = node.name;
     if (!node.initializer) {
       this.errorNode(node, "variable declaration must have an identifier");
@@ -2063,7 +2063,7 @@ export class InliningCompiler extends CompilingVisitor {
     this.errorNode(null, "Fragment-For not allowed in non-kernel functions");
   }
 
-  protected shouldStrictlySerialize() {
+  protected override shouldStrictlySerialize() {
     // avoid generating an overloaded task due to a for loop inside a function
     return true;
   }

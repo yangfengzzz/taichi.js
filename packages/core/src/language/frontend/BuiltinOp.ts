@@ -53,7 +53,7 @@ class BuiltinNullaryOp extends BuiltinOp {
     return TypeError.createError("wrong number of arguments, expecting 0, got " + args.length.toString());
   }
 
-  apply(args: Value[]): Value {
+  override apply(args: Value[]): Value {
     let typeError = this.checkType(args);
     assert(!typeError.hasError, "[Compiler Bug]", "nullary op type check failed", typeError.msg);
     return this.func();
@@ -85,7 +85,7 @@ class BuiltinUnaryOp extends BuiltinOp {
     return TypeError.createNoError();
   }
 
-  apply(args: Value[]): Value {
+  override apply(args: Value[]): Value {
     let typeError = this.checkType(args);
     assert(!typeError.hasError, "[Compiler Bug]", "unary op type check failed", typeError.msg);
     let arg = args[0];
@@ -217,7 +217,7 @@ class BuiltinBinaryOp extends BuiltinOp {
     }
   }
 
-  apply(args: Value[]): Value {
+  override apply(args: Value[]): Value {
     let typeError = this.checkType(args);
     assert(!typeError.hasError, "[Compiler Bug]", "binary op type check failed", typeError.msg);
     let type0 = args[0].getType();
@@ -281,7 +281,7 @@ class BuiltinCustomOp extends BuiltinOp {
     return this.checkType_(args);
   }
 
-  apply(args: Value[]): Value {
+  override apply(args: Value[]): Value {
     let typeError = this.checkType(args);
     assert(!typeError.hasError, "[Compiler Bug]", "custom op type check failed", typeError.msg);
     return this.apply_(args);
@@ -330,7 +330,7 @@ class BuiltinAtomicOp extends BuiltinOp {
     return TypeError.createNoError();
   }
 
-  apply(args: Value[]): Value {
+  override apply(args: Value[]): Value {
     let type0 = args[0].getType();
     let type1 = args[1].getType();
     let pointerType = type0 as PointerType;
