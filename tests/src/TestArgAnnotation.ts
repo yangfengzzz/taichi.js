@@ -23,9 +23,9 @@ async function testArgAnnotation(): Promise<boolean> {
 
   let iType = ti.i32;
   let fType = ti.f32;
-  let vType = ti.types.vector(ti.f32, 2);
-  let mType = ti.types.matrix(ti.f32, 2, 2);
-  let oType = ti.types.struct({
+  let vType = ti.vector(ti.f32, 2);
+  let mType = ti.matrix(ti.f32, 2, 2);
+  let oType = ti.struct({
     i: iType,
     f: fType,
     v: vType,
