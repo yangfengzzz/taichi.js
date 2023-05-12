@@ -1,0 +1,16 @@
+{
+  "name": "@taichi.js/example",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^4"
+  },
+  "dependencies": {
+    "@taichi.js/core": "workspace:*"
+  }
+}

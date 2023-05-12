@@ -4,13 +4,12 @@ tmp
 .idea
 /node_modules
 /packages/*/node_modules
+rollup-plugin-taichi/node_modules
+tests/node_modules
+examples/node_modules
 /packages/*/types
 /packages/*/doc
-/tests/node_modules
-/playground/node_modules
 types
-/packages/*/test/fixtures/**/node_modules
-/boilerplates/*/node_modules
 lib
 dist
 dist-miniprogram

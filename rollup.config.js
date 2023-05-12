@@ -38,6 +38,10 @@ const commonPlugins = [
       return endWith(f, ".js");
     }
   }),
+  replace({
+    'require("source-map-support").install()': "",
+    delimiters: ["", ""]
+  }),
   resolve({ extensions, preferBuiltins: true, mainFields }),
   swc(
     defineRollupSwcOption({
