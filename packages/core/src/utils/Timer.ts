@@ -1,14 +1,12 @@
 export class Timer {
-    constructor() {
+  constructor() {}
+  private begin: number = Date.now();
+  time() {
+    return Date.now() - this.begin;
+  }
 
-    }
-    private begin: number = Date.now()
-    time() {
-        return Date.now() - this.begin
-    }
-
-    private static defaultTimer = new Timer()
-    public static getDefaultTimer() {
-        return this.defaultTimer
-    }
+  private static defaultTimer = new Timer();
+  public static getDefaultTimer() {
+    return this.defaultTimer;
+  }
 }

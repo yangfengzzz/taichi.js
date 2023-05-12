@@ -1,12 +1,12 @@
-import * as ti from "../../taichi"
+import { struct } from "../../api/Types";
+import { i32 } from "../../api/Kernels";
 
 export class BatchInfo {
-    constructor(public materialIndex: number) {
-        
-    }
-    static getKernelType() {
-        return ti.types.struct({
-            materialIndex: ti.i32,
-        })
-    }
+  constructor(public materialIndex: number) {}
+
+  static getKernelType() {
+    return struct({
+      materialIndex: i32
+    });
+  }
 }

@@ -1,17 +1,16 @@
-import { Transform } from "./Transform"
-import * as ti from "../taichi"
-export class SceneNode {
-    constructor(){
+import { Transform } from "./Transform";
+import { struct } from "../api/Types";
 
-    }
-    parent: number = -1
-    children: number[] = []
-    localTransform: Transform = new Transform
-    globalTransform: Transform = new Transform
-    mesh: number = -1
-    static getKernelType(){
-        return ti.types.struct({
-            globalTransform: Transform.getKernelType()
-        })
-    }
+export class SceneNode {
+  constructor() {}
+  parent: number = -1;
+  children: number[] = [];
+  localTransform: Transform = new Transform();
+  globalTransform: Transform = new Transform();
+  mesh: number = -1;
+  static getKernelType() {
+    return struct({
+      globalTransform: Transform.getKernelType()
+    });
+  }
 }

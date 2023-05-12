@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    "target": "es2017",
     "module": "esnext",
+    "target": "esnext",
     "declaration": true,
-    "typeRoots": [ "./node_modules/@webgpu/types", "./node_modules/@types"],
+    "typeRoots": [ "./node_modules/@webgpu/types"],
     "allowJs": true,
     "esModuleInterop": true,
     "strict": true,

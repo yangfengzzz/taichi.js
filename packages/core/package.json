@@ -1,6 +1,6 @@
 {
   "name": "@taichi.js/core",
-  "version": "1.0.0-beta.8",
+  "version": "0.0.30",
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"
@@ -20,5 +20,6 @@
   "dependencies": {
   },
   "devDependencies": {
+    "@webgpu/types": "^0.1.20"
   }
 }
