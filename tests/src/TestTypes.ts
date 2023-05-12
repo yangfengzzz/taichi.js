@@ -7,8 +7,8 @@ async function testTypes(): Promise<boolean> {
 
   await ti.init();
 
-  let vecType = ti.vector(ti.i32, 3);
-  let matType = ti.matrix(ti.f32, 2, 2);
+  let vecType = ti.types.vector(ti.i32, 3);
+  let matType = ti.types.matrix(ti.f32, 2, 2);
 
   let m = ti.field(matType, [1]);
   let v = ti.field(vecType, [1]);

@@ -7,13 +7,13 @@ async function testStruct(): Promise<boolean> {
 
   await ti.init();
 
-  let S1 = ti.struct({
+  let S1 = ti.types.struct({
     f: ti.f32,
-    f3: ti.vector(ti.f32, 3),
-    i4: ti.vector(ti.i32, 4)
+    f3: ti.types.vector(ti.f32, 3),
+    i4: ti.types.vector(ti.i32, 4)
   });
 
-  let S2 = ti.struct({
+  let S2 = ti.types.struct({
     i: ti.i32,
     s1: S1
   });

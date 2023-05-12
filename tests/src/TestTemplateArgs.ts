@@ -1,4 +1,3 @@
-//@ts-nocheck
 import * as ti from "@taichi.js/core";
 import { assertEqual } from "./Utils";
 
@@ -23,9 +22,9 @@ async function testTemplateArgs(): Promise<boolean> {
 
   let iType = ti.i32;
   let fType = ti.f32;
-  let vType = ti.vector(ti.f32, 2);
-  let mType = ti.matrix(ti.f32, 2, 2);
-  let oType = ti.struct({
+  let vType = ti.types.vector(ti.f32, 2);
+  let mType = ti.types.matrix(ti.f32, 2, 2);
+  let oType = ti.types.struct({
     i: iType,
     f: fType,
     v: vType,
