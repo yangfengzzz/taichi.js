@@ -26,8 +26,7 @@
     "b:module": "cross-env BUILD_TYPE=MODULE rollup -c",
     "b:umd": "cross-env BUILD_TYPE=UMD rollup -c",
     "b:all": "npm run b:types && cross-env BUILD_TYPE=ALL rollup -c",
-    "clean": "pnpm -r exec rm -rf dist && pnpm -r exec rm -rf types",
-    "start": "http-server -a 127.0.0.1 -p 8080"
+    "clean": "pnpm -r exec rm -rf dist && pnpm -r exec rm -rf types"
   },
   "devDependencies": {
     "@commitlint/cli": "^11.0.0",
@@ -58,7 +57,7 @@
     "rollup-plugin-swc3": "^0.8.0",
     "ts-node": "^10.8.1",
     "typescript": "^4.8.4",
-    "http-server": "^14.0.0"
+    "vite": "^4"
   },
   "dependencies": {
     "@loaders.gl/core": "^3.1.8",

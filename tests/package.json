@@ -1,19 +1,15 @@
 {
   "name": "@taichi.js/tests",
   "private": true,
-  "version": "1.0.0-alpha.6",
-  "license": "MIT",
-  "main": "dist/main.js",
-  "module": "dist/module.js",
-  "types": "types/index.d.ts",
-  "debug": "src/index.ts",
+  "version": "1.0.0",
   "scripts": {
-    "b:types": "echo hi"
+    "dev": "vite --host",
+    "build": "vite build",
+    "serve": "vite preview"
   },
-  "files": [
-    "dist/**/*",
-    "types/**/*"
-  ],
+  "devDependencies": {
+    "vite": "^4"
+  },
   "dependencies": {
     "@taichi.js/core": "workspace:*"
   }
