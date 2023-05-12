@@ -1062,7 +1062,7 @@ let scale = func((t: vector) => {
   ];
 });
 
-class LibraryFunc {
+export class LibraryFunc {
   constructor(public name: string, public code: string) {}
 
   public static getLibraryFuncs(): Map<string, LibraryFunc> {
@@ -1086,5 +1086,3 @@ class LibraryFunc {
     return funcsMap;
   }
 }
-
-export { LibraryFunc };

@@ -1,9 +1,8 @@
 import { Field } from "../../data/Field";
 import { SetImage } from "./SetImage";
-import { Texture } from "../Textures";
-import { DepthTexture } from "../../data/Texture";
+import { DepthTexture, Texture } from "../../data/Texture";
 
-class Canvas {
+export class Canvas {
   constructor(public htmlCanvas: HTMLCanvasElement) {
     this.setImageObj = new SetImage(htmlCanvas);
   }
@@ -12,5 +11,3 @@ class Canvas {
     await this.setImageObj.render(image);
   }
 }
-
-export { Canvas };

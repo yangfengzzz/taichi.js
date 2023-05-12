@@ -9,7 +9,7 @@ export interface ProgramOptions {
   printWGSL: boolean;
 }
 
-class Program {
+export class Program {
   options: ProgramOptions = {
     printIR: false,
     printWGSL: false
@@ -90,5 +90,3 @@ class Program {
     return "anonymous_" + (this.nextAnonymousKernel++).toString();
   }
 }
-
-export { Program };

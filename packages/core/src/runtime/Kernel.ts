@@ -4,7 +4,8 @@ import { Field } from "../data/Field";
 
 import { error } from "../utils/Logging";
 import { Runtime } from "./Runtime";
-enum ResourceType {
+
+export enum ResourceType {
   Root,
   RootAtomic,
   GlobalTmps,
@@ -17,14 +18,15 @@ enum ResourceType {
   StorageTexture
 }
 
-class ResourceInfo {
+export class ResourceInfo {
   constructor(public resourceType: ResourceType, public resourceID?: number) {}
 
   equals(that: ResourceInfo): boolean {
     return this.resourceID === that.resourceID && this.resourceType === that.resourceType;
   }
 }
-class ResourceBinding {
+
+export class ResourceBinding {
   constructor(public info: ResourceInfo, public binding: number) {}
 
   equals(that: ResourceBinding): boolean {
@@ -33,7 +35,7 @@ class ResourceBinding {
 }
 
 // compute shader
-class TaskParams {
+export class TaskParams {
   constructor(
     public code: string,
     public workgroupSize: number,
@@ -41,15 +43,16 @@ class TaskParams {
     public bindings: ResourceBinding[] = []
   ) {}
 }
-class VertexShaderParams {
+
+export class VertexShaderParams {
   constructor(public code: string = "", public bindings: ResourceBinding[] = []) {}
 }
 
-class FragmentShaderParams {
+export class FragmentShaderParams {
   constructor(public code: string = "", public bindings: ResourceBinding[] = []) {}
 }
 
-class RenderPipelineParams {
+export class RenderPipelineParams {
   constructor(
     public vertex: VertexShaderParams,
     public fragment: FragmentShaderParams,
@@ -83,23 +86,23 @@ class RenderPipelineParams {
   }
 }
 
-interface ColorAttachment {
+export interface ColorAttachment {
   texture: TextureBase;
   clearColor?: number[];
 }
 
-interface DepthAttachment {
+export interface DepthAttachment {
   texture: DepthTexture;
   clearDepth?: number;
   storeDepth?: boolean;
 }
 
-interface RenderPassParams {
+export interface RenderPassParams {
   colorAttachments: ColorAttachment[];
   depthAttachment: DepthAttachment | null;
 }
 
-class KernelParams {
+export class KernelParams {
   constructor(
     public tasksParams: (TaskParams | RenderPipelineParams)[],
     public argTypes: Type[],
@@ -108,7 +111,7 @@ class KernelParams {
   ) {}
 }
 
-class CompiledTask {
+export class CompiledTask {
   pipeline: GPUComputePipeline | null = null;
   bindGroup: GPUBindGroup | null = null;
   constructor(public params: TaskParams, runtime: Runtime) {
@@ -126,7 +129,7 @@ class CompiledTask {
   }
 }
 
-class CompiledRenderPipeline {
+export class CompiledRenderPipeline {
   pipeline: GPURenderPipeline | null = null;
   bindGroup: GPUBindGroup | null = null;
   constructor(public params: RenderPipelineParams, renderPassParams: RenderPassParams, runtime: Runtime) {
@@ -228,7 +231,7 @@ class CompiledRenderPipeline {
   }
 }
 
-class CompiledRenderPassInfo {
+export class CompiledRenderPassInfo {
   constructor(public params: RenderPassParams) {}
 
   public getGPURenderPassDescriptor(): GPURenderPassDescriptor {
@@ -284,7 +287,8 @@ class CompiledRenderPassInfo {
     };
   }
 }
-class CompiledKernel {
+
+export class CompiledKernel {
   constructor(
     public tasks: (CompiledTask | CompiledRenderPipeline)[] = [],
     public argTypes: Type[] = [],
@@ -292,21 +296,3 @@ class CompiledKernel {
     public renderPassInfo: CompiledRenderPassInfo | null = null
   ) {}
 }
-
-export {
-  CompiledTask,
-  CompiledKernel,
-  TaskParams,
-  ResourceType,
-  ResourceInfo,
-  ResourceBinding,
-  KernelParams,
-  VertexShaderParams,
-  FragmentShaderParams,
-  RenderPipelineParams,
-  CompiledRenderPipeline,
-  RenderPassParams,
-  ColorAttachment,
-  DepthAttachment,
-  CompiledRenderPassInfo
-};

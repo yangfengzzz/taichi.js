@@ -1,4 +1,4 @@
-class Scope {
+export class Scope {
   constructor() {}
 
   obj: any = {};
@@ -54,5 +54,3 @@ class Scope {
     return result;
   }
 }
-
-export { Scope };

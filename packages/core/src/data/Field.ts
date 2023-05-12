@@ -4,7 +4,7 @@ import { Program } from "../program/Program";
 import { assert, error } from "../utils/Logging";
 import { elementToInt32Array, groupElements, reshape, toElement } from "../utils/Utils";
 
-class Field {
+export class Field {
   constructor(
     public snodeTree: SNodeTree,
     public offsetBytes: number,
@@ -130,5 +130,3 @@ class Field {
     await Program.getCurrentProgram().runtime!.hostToDevice(this, intArray, offsetBytes);
   }
 }
-
-export { Field };

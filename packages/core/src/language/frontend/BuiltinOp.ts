@@ -28,7 +28,7 @@ import {
 } from "../ir/Stmt";
 import { IRBuilder } from "../ir/Builder";
 
-class BuiltinOp {
+export class BuiltinOp {
   constructor(public name: string, public arity: number) {}
 
   checkType(args: Value[]): TypeError {
@@ -41,7 +41,7 @@ class BuiltinOp {
   }
 }
 
-class BuiltinNullaryOp extends BuiltinOp {
+export class BuiltinNullaryOp extends BuiltinOp {
   constructor(name: string, public resultType: Type, public func: () => Value) {
     super(name, 0);
   }
@@ -60,7 +60,7 @@ class BuiltinNullaryOp extends BuiltinOp {
   }
 }
 
-class BuiltinUnaryOp extends BuiltinOp {
+export class BuiltinUnaryOp extends BuiltinOp {
   constructor(
     name: string,
     public irBuilder: IRBuilder,
@@ -109,7 +109,7 @@ class BuiltinUnaryOp extends BuiltinOp {
   }
 }
 
-class BuiltinBinaryOp extends BuiltinOp {
+export class BuiltinBinaryOp extends BuiltinOp {
   constructor(
     name: string,
     public irBuilder: IRBuilder,
@@ -267,7 +267,7 @@ class BuiltinBinaryOp extends BuiltinOp {
   }
 }
 
-class BuiltinCustomOp extends BuiltinOp {
+export class BuiltinCustomOp extends BuiltinOp {
   constructor(name: string, arity: number, checkType: (args: Value[]) => TypeError, apply: (args: Value[]) => Value) {
     super(name, arity);
     this.apply_ = apply;
@@ -288,7 +288,7 @@ class BuiltinCustomOp extends BuiltinOp {
   }
 }
 
-class BuiltinAtomicOp extends BuiltinOp {
+export class BuiltinAtomicOp extends BuiltinOp {
   constructor(name: string, public irBuilder: IRBuilder, public op: AtomicOpType) {
     super(name, 2);
     this.f32Caster = new BuiltinUnaryOp("f32", irBuilder, UnaryOpType.cast_f32_value);
@@ -349,7 +349,7 @@ class BuiltinAtomicOp extends BuiltinOp {
   }
 }
 
-class BuiltinOpFactory {
+export class BuiltinOpFactory {
   static getAtomicOps(irBuilder: IRBuilder): Map<string, BuiltinAtomicOp> {
     let opsMap = new Map<string, BuiltinAtomicOp>();
     let ops: BuiltinAtomicOp[] = [
@@ -1133,13 +1133,3 @@ class BuiltinOpFactory {
     return opsMap;
   }
 }
-
-export {
-  BuiltinOp,
-  BuiltinNullaryOp,
-  BuiltinBinaryOp,
-  BuiltinUnaryOp,
-  BuiltinAtomicOp,
-  BuiltinCustomOp,
-  BuiltinOpFactory
-};

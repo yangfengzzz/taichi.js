@@ -1,3 +1,1 @@
-type MultiDimensionalArray<T> = T[] | MultiDimensionalArray<T>[];
-
-export { MultiDimensionalArray };
+export type MultiDimensionalArray<T> = T[] | MultiDimensionalArray<T>[];

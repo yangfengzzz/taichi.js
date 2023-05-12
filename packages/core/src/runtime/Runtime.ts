@@ -18,7 +18,7 @@ import { TextureBase, TextureDimensionality, TextureSamplingOptions } from "../d
 import { PipelineCache } from "./PipelineCache";
 import { BufferPool, PooledBuffer } from "./BufferPool";
 
-class Runtime {
+export class Runtime {
   adapter: GPUAdapter | null = null;
   device: GPUDevice | null = null;
   kernels: CompiledKernel[] = [];
@@ -652,5 +652,3 @@ class EncoderState {
   computePipeline?: GPUComputePipeline;
   renderPipeline?: GPURenderPipeline;
 }
-
-export { Runtime };

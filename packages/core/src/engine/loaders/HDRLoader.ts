@@ -1,7 +1,8 @@
-import { texture, Texture } from "../../api/Textures";
+import { texture } from "../../api/Textures";
 import { Vector } from "../../api/Fields";
 import { f32, kernel, template } from "../../api/Kernels";
 import { ndrange, textureStore } from "../../api/KernelScopeBuiltin";
+import { Texture } from "../../data/Texture";
 
 function rgbeToFloat(buffer: Uint8Array): Float32Array {
   let l = buffer.byteLength >> 2;

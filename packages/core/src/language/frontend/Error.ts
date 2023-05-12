@@ -1,6 +1,6 @@
 import { assert } from "../../utils/Logging";
 
-class ResultOrError<T> {
+export class ResultOrError<T> {
   private constructor(public isError: boolean, public result: T | null, public errorMessage: string | null) {
     if (isError) {
       assert(result === null && errorMessage !== null);
@@ -15,4 +15,3 @@ class ResultOrError<T> {
     return new ResultOrError<Y>(true, null, msg);
   }
 }
-export { ResultOrError };

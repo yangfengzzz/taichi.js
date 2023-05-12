@@ -14,7 +14,7 @@ import {
   textureSample
 } from "../KernelScopeBuiltin";
 
-class SetImage {
+export class SetImage {
   VBO: Field;
   IBO: Field;
   renderTarget: CanvasTexture;
@@ -87,5 +87,3 @@ class SetImage {
     }
   }
 }
-
-export { SetImage };

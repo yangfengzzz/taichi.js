@@ -14,7 +14,7 @@ function numElements(dimensions: number[], packed: boolean = false) {
   return result;
 }
 
-class SNodeTree {
+export class SNodeTree {
   treeId: number = 0;
   fields: Field[] = [];
   size: number = 0;
@@ -42,5 +42,3 @@ class SNodeTree {
     return field;
   }
 }
-
-export { SNodeTree };
