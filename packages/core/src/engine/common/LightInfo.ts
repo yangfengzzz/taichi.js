@@ -1,6 +1,5 @@
+import * as ti from "../../";
 import { ShadowInfo } from "./ShadowInfo";
-import { struct, vector } from "../../api/Types";
-import { f32, i32 } from "../../api/Kernels";
 
 export enum LightType {
   Point = 1,
@@ -23,16 +22,16 @@ export class LightInfo {
   ) {}
 
   static getKernelType() {
-    return struct({
-      type: i32,
-      brightness: f32,
-      color: vector(f32, 3),
-      influenceRadius: f32,
-      position: vector(f32, 3),
-      direction: vector(f32, 3),
-      innerConeAngle: f32,
-      outerConeAngle: f32,
-      castsShadow: i32
+    return ti.types.struct({
+      type: ti.i32,
+      brightness: ti.f32,
+      color: ti.types.vector(ti.f32, 3),
+      influenceRadius: ti.f32,
+      position: ti.types.vector(ti.f32, 3),
+      direction: ti.types.vector(ti.f32, 3),
+      innerConeAngle: ti.f32,
+      outerConeAngle: ti.f32,
+      castsShadow: ti.i32
     });
   }
 }
@@ -60,6 +59,7 @@ export class PointLightInfo extends LightInfo {
     );
   }
 }
+
 export class SpotLightInfo extends LightInfo {
   constructor(
     brightness: number,
@@ -67,10 +67,23 @@ export class SpotLightInfo extends LightInfo {
     influenceRadius: number,
     position: number[],
     direction: number[], // spot and dir
+    innerConeAngle: number = 0,
+    outerConeAngle: number = Math.PI / 4,
     castsShadow: boolean = false,
     shadow: ShadowInfo | undefined = undefined
   ) {
-    super(LightType.Spot, brightness, color, influenceRadius, position, direction, 0, Math.PI / 4, castsShadow, shadow);
+    super(
+      LightType.Spot,
+      brightness,
+      color,
+      influenceRadius,
+      position,
+      direction,
+      innerConeAngle,
+      outerConeAngle,
+      castsShadow,
+      shadow
+    );
   }
 }
 

@@ -7,14 +7,9 @@ import {
   GlobalStoreStmt,
   GlobalTemporaryLoadStmt,
   GlobalTemporaryStoreStmt,
-  IfStmt,
   IRModule,
-  LocalStoreStmt,
   PointerStmt,
-  ReturnStmt,
-  Stmt,
-  StmtKind,
-  WhileStmt
+  StmtKind
 } from "../Stmt";
 import { IRTransformer } from "../Transformer";
 import { IRVisitor } from "../Visitor";
@@ -26,6 +21,7 @@ class IdentifyAtomicResources extends IRVisitor {
   constructor() {
     super();
   }
+
   public atomicTrees = new Set<number>();
   public atomicGtemps: boolean = false;
 
@@ -43,10 +39,12 @@ class IdentifyAtomicResources extends IRVisitor {
     let dest = stmt.getDestination();
     this.maybeMarkAtomics(dest);
   }
+
   override visitAtomicLoadStmt(stmt: AtomicLoadStmt): void {
     let ptr = stmt.getPointer();
     this.maybeMarkAtomics(ptr);
   }
+
   override visitAtomicStoreStmt(stmt: AtomicStoreStmt): void {
     let ptr = stmt.getPointer();
     this.maybeMarkAtomics(ptr);
@@ -64,6 +62,7 @@ class PromoteLoadStores extends IRTransformer {
     this.atomicTrees = atomicTrees;
     this.atomicGtemps = atomicGtemps;
   }
+
   override visitGlobalLoadStmt(stmt: GlobalLoadStmt): void {
     let ptr = stmt.getPointer();
     if (this.atomicTrees.has(ptr.field.snodeTree.treeId)) {
@@ -73,6 +72,7 @@ class PromoteLoadStores extends IRTransformer {
       this.pushNewStmt(stmt);
     }
   }
+
   override visitGlobalStoreStmt(stmt: GlobalStoreStmt): void {
     let ptr = stmt.getPointer();
     if (this.atomicTrees.has(ptr.field.snodeTree.treeId)) {
@@ -81,6 +81,7 @@ class PromoteLoadStores extends IRTransformer {
       this.pushNewStmt(stmt);
     }
   }
+
   override visitGlobalTemporaryLoadStmt(stmt: GlobalTemporaryLoadStmt): void {
     let ptr = stmt.getPointer();
     if (this.atomicGtemps) {
@@ -90,6 +91,7 @@ class PromoteLoadStores extends IRTransformer {
       this.pushNewStmt(stmt);
     }
   }
+
   override visitGlobalTemporaryStoreStmt(stmt: GlobalTemporaryStoreStmt): void {
     let ptr = stmt.getPointer();
     if (this.atomicGtemps) {
@@ -98,6 +100,7 @@ class PromoteLoadStores extends IRTransformer {
       this.pushNewStmt(stmt);
     }
   }
+
   override transform(module: IRModule): void {
     super.transform(module);
     this.replacer.transform(module);

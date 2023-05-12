@@ -786,16 +786,16 @@ export class CodegenVisitor extends IRVisitor {
       }
       case PrimitiveType.f32: {
         /*
-                fn atomicAddFloat(dest: ptr<storage, atomic<i32>, read_write>, v: f32) -> f32 {
-                    loop {
-                        let old_val : f32 = bitcast<f32>(atomicLoad(dest));
-                        let new_val : f32 = old_val + v;
-                        if(atomicCompareExchangeWeak(dest, bitcast<i32>(old_val),bitcast<i32>(new_val)).y != 0){
-                            return old_val;
-                        }
-                    }
+        fn atomicAddFloat(dest: ptr<storage, atomic<i32>, read_write>, v: f32) -> f32 {
+            loop {
+                let old_val : f32 = bitcast<f32>(atomicLoad(dest));
+                let new_val : f32 = old_val + v;
+                if(atomicCompareExchangeWeak(dest, bitcast<i32>(old_val),bitcast<i32>(new_val)).y != 0){
+                    return old_val;
                 }
-                */
+            }
+        }
+        */
 
         // WGSL doesn't allow declaring a function whose argument is a pointer to
         // SSBO... so we inline it

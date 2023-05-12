@@ -62,6 +62,7 @@ export class IRBuilder {
   get_int32(val: number) {
     return this.pushNewStmt(new ConstStmt(val, PrimitiveType.i32, this.getNewId()));
   }
+
   get_float32(val: number) {
     return this.pushNewStmt(new ConstStmt(val, PrimitiveType.f32, this.getNewId()));
   }
@@ -288,6 +289,7 @@ export class IRBuilder {
 
 export class Guard {
   constructor(public parent: { guards: Guard[] }, public block: Block) {}
+
   delete() {
     this.parent.guards.pop();
   }

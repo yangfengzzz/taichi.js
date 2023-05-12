@@ -1,7 +1,4 @@
-import { texture } from "../../api/Textures";
-import { Vector } from "../../api/Fields";
-import { f32, kernel, template } from "../../api/Kernels";
-import { ndrange, textureStore } from "../../api/KernelScopeBuiltin";
+import * as ti from "../../";
 import { Texture } from "../../data/Texture";
 
 function rgbeToFloat(buffer: Uint8Array): Float32Array {
@@ -233,19 +230,20 @@ export class HdrTexture {
 export class HdrLoader {
   private static getImgFieldToTextureKernel(): (...args: any[]) => void {
     if (!this.imgFieldToTexture) {
-      this.imgFieldToTexture = kernel(
-        { imgField: template(), imgTexture: template() },
+      this.imgFieldToTexture = ti.kernel(
+        { imgField: ti.template(), imgTexture: ti.template() },
         (imgField: any, imgTexture: any) => {
-          for (let I of ndrange(imgField.dimensions[0], imgField.dimensions[1])) {
+          for (let I of ti.ndrange(imgField.dimensions[0], imgField.dimensions[1])) {
             let x = I.y;
             let y = imgField.dimensions[0] - I.x;
-            textureStore(imgTexture, [x, y], imgField[I]);
+            ti.textureStore(imgTexture, [x, y], imgField[I]);
           }
         }
       );
     }
     return this.imgFieldToTexture;
   }
+
   private static imgFieldToTexture: ((...args: any[]) => void) | undefined = undefined;
 
   static async loadFromURL(url: string): Promise<HdrTexture> {
@@ -258,9 +256,9 @@ export class HdrLoader {
     let height = parseResult.shape[1];
 
     let floatData = Array.from(parseResult.data);
-    let imgField = Vector.field(4, f32, [height, width]);
+    let imgField = ti.Vector.field(4, ti.f32, [height, width]);
     await imgField.fromArray1D(floatData);
-    let imgTexture = texture(4, [width, height]);
+    let imgTexture = ti.texture(4, [width, height]);
     let k = this.getImgFieldToTextureKernel();
     k(imgField, imgTexture);
     return new HdrTexture(imgTexture, parseResult.exposure);

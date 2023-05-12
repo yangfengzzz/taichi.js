@@ -1,5 +1,4 @@
 import { assert, error } from "../../utils/Logging";
-import { Guard } from "../ir/Builder";
 import {
   AtomicOpStmt,
   AtomicStoreStmt,
@@ -12,7 +11,6 @@ import {
   IRModule,
   RangeForStmt,
   ReturnStmt,
-  Stmt,
   StmtKind,
   VertexForStmt
 } from "../ir/Stmt";

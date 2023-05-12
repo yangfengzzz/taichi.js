@@ -6,11 +6,14 @@ class RemapIdsPass extends IRTransformer {
     super.transform(module);
     module.idBound = this.idBound;
   }
+
   override pushNewStmt(stmt: Stmt): Stmt {
     stmt.id = this.getNewId();
     return super.pushNewStmt(stmt);
   }
+
   idBound: number = 0;
+
   getNewId() {
     return this.idBound++;
   }

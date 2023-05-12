@@ -1,5 +1,4 @@
-import { struct } from "../../api/Types";
-import { i32 } from "../../api/Kernels";
+import * as ti from "../../";
 
 export class DrawInfo {
   constructor(
@@ -11,12 +10,12 @@ export class DrawInfo {
   ) {}
 
   static getKernelType() {
-    return struct({
-      indexCount: i32,
-      instanceCount: i32,
-      firstIndex: i32,
-      baseVertex: i32,
-      firstInstance: i32
+    return ti.types.struct({
+      indexCount: ti.i32,
+      instanceCount: ti.i32,
+      firstIndex: ti.i32,
+      baseVertex: ti.i32,
+      firstInstance: ti.i32
     });
   }
 }

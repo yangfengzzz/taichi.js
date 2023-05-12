@@ -13,6 +13,7 @@ class Parser {
       .filter((x) => x.length !== 0);
     return words[0] === firstWord;
   }
+
   static tailWords(line: string) {
     let words = line
       .trim()
@@ -20,10 +21,12 @@ class Parser {
       .filter((x) => x.length !== 0);
     return words.splice(1);
   }
+
   static lastWord(line: string) {
     let tailWords = this.tailWords(line);
     return tailWords[tailWords.length - 1];
   }
+
   static expandToVecN(v: number[], n: number) {
     let result = [];
     for (let i = 0; i < n; i++) {
@@ -33,6 +36,7 @@ class Parser {
     }
     return result;
   }
+
   static stringArrayToVec(stringArray: string[], n: number) {
     return Parser.expandToVecN(
       stringArray.slice(0, n).map((x) => parseFloat(x)),

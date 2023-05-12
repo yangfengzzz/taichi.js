@@ -1,7 +1,6 @@
 import { TextureBase } from "../data/Texture";
 import { Type } from "../language/frontend/Type";
-import { struct, vector } from "../api/Types";
-import { f32, i32 } from "../api/Kernels";
+import * as ti from "../";
 
 export class MaterialAttribute {
   constructor(
@@ -19,10 +18,10 @@ export class MaterialAttribute {
   }
 
   getInfoKernelType(): Type {
-    let valueType = vector(f32, this.numComponents);
-    return struct({
+    let valueType = ti.types.vector(ti.f32, this.numComponents);
+    return ti.types.struct({
       value: valueType,
-      hasTexture: i32
+      hasTexture: ti.i32
     });
   }
 }
@@ -47,8 +46,8 @@ export class Material {
   }
 
   getInfoKernelType(): Type {
-    return struct({
-      materialID: i32,
+    return ti.types.struct({
+      materialID: ti.i32,
       baseColor: this.baseColor.getInfoKernelType(),
       metallicRoughness: this.metallicRoughness.getInfoKernelType(),
       emissive: this.emissive.getInfoKernelType(),

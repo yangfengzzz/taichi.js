@@ -68,9 +68,11 @@ function typeName(type: PrimitiveType) {
 
 class IRPrinter extends IRVisitor {
   sb = new StringBuilder();
+
   override visitConstStmt(stmt: ConstStmt) {
     this.write(`${str(stmt)} : ${typeName(stmt.getReturnType())} = const ${stmt.val}`);
   }
+
   override visitRangeForStmt(stmt: RangeForStmt) {
     this.write(`${str(stmt)} = for range(${str(stmt)}) {`);
     this.indent();
@@ -78,37 +80,48 @@ class IRPrinter extends IRVisitor {
     this.dedent();
     this.write("}");
   }
+
   override visitLoopIndexStmt(stmt: LoopIndexStmt) {
     this.write(`${str(stmt)} : ${typeName(stmt.getReturnType())} = loop index of ${str(stmt.getLoop())}`);
   }
+
   override visitAllocaStmt(stmt: AllocaStmt) {
     this.write(`${str(stmt)} = alloca ${typeName(stmt.allocatedType)}`);
   }
+
   override visitLocalLoadStmt(stmt: LocalLoadStmt) {
     this.write(`${str(stmt)} : ${typeName(stmt.getReturnType())} = local load ${str(stmt.getPointer())}`);
   }
+
   override visitLocalStoreStmt(stmt: LocalStoreStmt) {
     this.write(`local store ${str(stmt.getPointer())} <- ${str(stmt.getValue())}`);
   }
+
   override visitGlobalPtrStmt(stmt: GlobalPtrStmt) {
     let indices = "[" + stmt.getIndices().map(str).join(", ") + "]";
     this.write(`${str(stmt)} = global pointer, indices ${indices}`);
   }
+
   override visitGlobalLoadStmt(stmt: GlobalLoadStmt) {
     this.write(`${str(stmt)} : ${typeName(stmt.getReturnType())} = global load ${str(stmt.getPointer())}`);
   }
+
   override visitGlobalStoreStmt(stmt: GlobalStoreStmt) {
     this.write(`global store ${str(stmt.getPointer())} <- ${str(stmt.getValue())}`);
   }
+
   override visitGlobalTemporaryStmt(stmt: GlobalTemporaryStmt) {
     this.write(`${str(stmt)} = gtemp ${stmt.offset} : ${typeName(stmt.type)}`);
   }
+
   override visitGlobalTemporaryLoadStmt(stmt: GlobalTemporaryLoadStmt) {
     this.write(`${str(stmt)} : ${typeName(stmt.getReturnType())} = gtemp load ${str(stmt.getPointer())}`);
   }
+
   override visitGlobalTemporaryStoreStmt(stmt: GlobalTemporaryStoreStmt) {
     this.write(`gtemp store ${str(stmt.getPointer())} <- ${str(stmt.getValue())}`);
   }
+
   override visitBinaryOpStmt(stmt: BinaryOpStmt) {
     let f = () => {
       switch (stmt.op) {
@@ -168,6 +181,7 @@ class IRPrinter extends IRVisitor {
       )}`
     );
   }
+
   override visitUnaryOpStmt(stmt: UnaryOpStmt) {
     let f = () => {
       switch (stmt.op) {
@@ -223,6 +237,7 @@ class IRPrinter extends IRVisitor {
     };
     this.write(`${str(stmt)} : ${typeName(stmt.getReturnType())} = unary op ${f()} ${str(stmt.getOperand())}`);
   }
+
   override visitWhileStmt(stmt: WhileStmt) {
     this.write(`${str(stmt)} = while true {`);
     this.indent();
@@ -230,6 +245,7 @@ class IRPrinter extends IRVisitor {
     this.dedent();
     this.write("}");
   }
+
   override visitIfStmt(stmt: IfStmt) {
     this.write(`${str(stmt)} = if(${str(stmt.getCondition())}){`);
     this.indent();
@@ -242,22 +258,28 @@ class IRPrinter extends IRVisitor {
     this.dedent();
     this.write("}");
   }
+
   override visitWhileControlStmt(stmt: WhileControlStmt) {
     this.write("break;");
   }
+
   override visitContinueStmt(stmt: ContinueStmt) {
     this.write("continue;");
   }
+
   override visitArgLoadStmt(stmt: ArgLoadStmt) {
     this.write(`${str(stmt)} : ${typeName(stmt.getReturnType())} = arg load ${stmt.argId}`);
   }
+
   override visitRandStmt(stmt: RandStmt) {
     this.write(`${str(stmt)} : ${typeName(stmt.getReturnType())} = random`);
   }
+
   override visitReturnStmt(stmt: ReturnStmt) {
     let values = "[" + stmt.getValues().map(str).join(", ") + "]";
     this.write(`return ${values}`);
   }
+
   override visitAtomicOpStmt(stmt: AtomicOpStmt) {
     let f = () => {
       switch (stmt.op) {
@@ -283,9 +305,11 @@ class IRPrinter extends IRVisitor {
       )}, operand ${str(stmt.getOperand())}`
     );
   }
+
   override visitAtomicLoadStmt(stmt: AtomicLoadStmt) {
     this.write(`${str(stmt)} : ${typeName(stmt.getReturnType())} = atomic load, ptr ${str(stmt.getPointer())}`);
   }
+
   override visitAtomicStoreStmt(stmt: AtomicStoreStmt) {
     this.write(
       `${str(stmt)} : ${typeName(stmt.getReturnType())} = atomic store, ptr ${str(stmt.getPointer())}, val ${str(
@@ -301,6 +325,7 @@ class IRPrinter extends IRVisitor {
     this.dedent();
     this.write("}");
   }
+
   override visitFragmentForStmt(stmt: FragmentForStmt) {
     this.write(`${str(stmt)} = fragment for {`);
     this.indent();
@@ -308,15 +333,19 @@ class IRPrinter extends IRVisitor {
     this.dedent();
     this.write("}");
   }
+
   override visitVertexInputStmt(stmt: VertexInputStmt) {
     this.write(`${str(stmt)} : ${typeName(stmt.getReturnType())} = vertex input ${stmt.location}`);
   }
+
   override visitVertexOutputStmt(stmt: VertexOutputStmt) {
     this.write(`vertex output location=${stmt.location} ${stmt.getValue()}`);
   }
+
   override visitFragmentInputStmt(stmt: FragmentInputStmt) {
     this.write(`${str(stmt)} : ${typeName(stmt.getReturnType())} = fragment input ${stmt.location}`);
   }
+
   override visitBuiltInOutputStmt(stmt: BuiltInOutputStmt) {
     let f = () => {
       switch (stmt.builtinKind) {
@@ -331,6 +360,7 @@ class IRPrinter extends IRVisitor {
     let values = "[" + stmt.getValues().map(str).join(", ") + "]";
     this.write(`built-in output ${f()} location=${stmt.location} ${values}`);
   }
+
   override visitBuiltInInputStmt(stmt: BuiltInInputStmt) {
     let f = () => {
       switch (stmt.builtinKind) {
@@ -342,6 +372,7 @@ class IRPrinter extends IRVisitor {
     };
     this.write(`${str(stmt)} : ${typeName(stmt.getReturnType())} = built-in input ${f()}`);
   }
+
   override visitFragmentDerivativeStmt(stmt: FragmentDerivativeStmt) {
     let f = () => {
       switch (stmt.direction) {
@@ -353,9 +384,11 @@ class IRPrinter extends IRVisitor {
     };
     this.write(`${str(stmt)} : ${typeName(stmt.getReturnType())} = d(${stmt.getValue()})d${f()}`);
   }
+
   override visitDiscardStmt(stmt: DiscardStmt) {
     this.write(`discard;`);
   }
+
   override visitTextureFunctionStmt(stmt: TextureFunctionStmt) {
     let f = () => {
       switch (stmt.func) {
@@ -373,6 +406,7 @@ class IRPrinter extends IRVisitor {
     let operands = "[" + stmt.getAdditionalOperands().map(str).join(", ") + "]";
     this.write(`${str(stmt)} = texture ${f()} ${coords} ${operands}`);
   }
+
   override visitCompositeExtractStmt(stmt: CompositeExtractStmt) {
     this.write(
       `${str(stmt)} : ${typeName(stmt.getReturnType())} = composite extract ${stmt.elementIndex} ${stmt.getComposite()}`
@@ -380,12 +414,15 @@ class IRPrinter extends IRVisitor {
   }
 
   indentation = 0;
+
   indent() {
     this.indentation += 1;
   }
+
   dedent() {
     this.indentation -= 1;
   }
+
   write(...args: (string | number)[]) {
     this.sb.write("  ".repeat(this.indentation), ...args, "\n");
   }

@@ -20,6 +20,7 @@ export class SNodeTree {
   size: number = 0;
   rootBuffer: GPUBuffer | null = null;
   fragmentShaderWritable = false;
+
   constructor() {}
 
   addNaiveDenseField(elementType: Type, dimensionsArg: number[] | number): Field {

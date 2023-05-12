@@ -79,13 +79,17 @@ export class RangeForStmt extends Stmt {
     super(id, undefined, nameHint);
     this.operands = [range];
   }
+
   isParallelFor: boolean = false;
+
   getRange() {
     return this.operands[0];
   }
+
   setRange(range: Stmt) {
     this.operands[0] = range;
   }
+
   override getKind(): StmtKind {
     return StmtKind.RangeForStmt;
   }
@@ -96,9 +100,11 @@ export class LoopIndexStmt extends Stmt {
     super(id, PrimitiveType.i32, nameHint);
     this.operands = [loop];
   }
+
   getLoop() {
     return this.operands[0];
   }
+
   override getKind(): StmtKind {
     return StmtKind.LoopIndexStmt;
   }
@@ -108,6 +114,7 @@ export class AllocaStmt extends Stmt {
   constructor(public allocatedType: PrimitiveType, id: number, nameHint: string = "") {
     super(id, undefined, nameHint);
   }
+
   override getKind(): StmtKind {
     return StmtKind.AllocaStmt;
   }
@@ -118,9 +125,11 @@ export class LocalLoadStmt extends Stmt {
     super(id, ptr.allocatedType, nameHint);
     this.operands = [ptr];
   }
+
   getPointer() {
     return this.operands[0] as AllocaStmt;
   }
+
   override getKind(): StmtKind {
     return StmtKind.LocalLoadStmt;
   }
@@ -131,12 +140,15 @@ export class LocalStoreStmt extends Stmt {
     super(id, undefined, nameHint);
     this.operands = [ptr, value];
   }
+
   getPointer() {
     return this.operands[0] as AllocaStmt;
   }
+
   getValue() {
     return this.operands[1];
   }
+
   override getKind(): StmtKind {
     return StmtKind.LocalStoreStmt;
   }
@@ -147,12 +159,15 @@ export class GlobalPtrStmt extends Stmt {
     super(id, undefined, nameHint);
     this.operands = indices.slice();
   }
+
   override getKind(): StmtKind {
     return StmtKind.GlobalPtrStmt;
   }
+
   getPointedType(): PrimitiveType {
     return this.field.elementType.getPrimitivesList()[this.offsetInElement];
   }
+
   getIndices() {
     return this.operands.slice();
   }
@@ -164,9 +179,11 @@ export class GlobalLoadStmt extends Stmt {
     super(id, returnType, nameHint);
     this.operands = [ptr];
   }
+
   getPointer() {
     return this.operands[0] as GlobalPtrStmt;
   }
+
   override getKind(): StmtKind {
     return StmtKind.GlobalLoadStmt;
   }
@@ -177,12 +194,15 @@ export class GlobalStoreStmt extends Stmt {
     super(id, undefined, nameHint);
     this.operands = [ptr, value];
   }
+
   getPointer() {
     return this.operands[0] as GlobalPtrStmt;
   }
+
   getValue() {
     return this.operands[1];
   }
+
   override getKind(): StmtKind {
     return StmtKind.GlobalStoreStmt;
   }
@@ -192,6 +212,7 @@ export class GlobalTemporaryStmt extends Stmt {
   constructor(public type: PrimitiveType, public offset: number, id: number, nameHint: string = "") {
     super(id, undefined, nameHint);
   }
+
   override getKind(): StmtKind {
     return StmtKind.GlobalTemporaryStmt;
   }
@@ -202,9 +223,11 @@ export class GlobalTemporaryLoadStmt extends Stmt {
     super(id, ptr.type, nameHint);
     this.operands = [ptr];
   }
+
   getPointer() {
     return this.operands[0] as GlobalTemporaryStmt;
   }
+
   override getKind(): StmtKind {
     return StmtKind.GlobalTemporaryLoadStmt;
   }
@@ -215,12 +238,15 @@ export class GlobalTemporaryStoreStmt extends Stmt {
     super(id, undefined, nameHint);
     this.operands = [ptr, value];
   }
+
   getPointer() {
     return this.operands[0] as GlobalTemporaryStmt;
   }
+
   getValue() {
     return this.operands[1];
   }
+
   override getKind(): StmtKind {
     return StmtKind.GlobalTemporaryStoreStmt;
   }
@@ -325,18 +351,23 @@ export class BinaryOpStmt extends Stmt {
     super(id, returnType, nameHint);
     this.operands = [left, right];
   }
+
   override getKind(): StmtKind {
     return StmtKind.BinaryOpStmt;
   }
+
   getLeft() {
     return this.operands[0];
   }
+
   getRight() {
     return this.operands[1];
   }
+
   setLeft(left: Stmt) {
     this.operands[0] = left;
   }
+
   setRight(right: Stmt) {
     this.operands[1] = right;
   }
@@ -404,9 +435,11 @@ export class UnaryOpStmt extends Stmt {
     super(id, returnType, nameHint);
     this.operands = [this.operand];
   }
+
   override getKind(): StmtKind {
     return StmtKind.UnaryOpStmt;
   }
+
   getOperand() {
     return this.operands[0];
   }
@@ -416,6 +449,7 @@ export class WhileStmt extends Stmt {
   constructor(public body: Block, id: number, nameHint: string = "") {
     super(id, undefined, nameHint);
   }
+
   override getKind(): StmtKind {
     return StmtKind.WhileStmt;
   }
@@ -426,9 +460,11 @@ export class IfStmt extends Stmt {
     super(id, undefined, nameHint);
     this.operands = [cond];
   }
+
   override getKind(): StmtKind {
     return StmtKind.IfStmt;
   }
+
   getCondition() {
     return this.operands[0];
   }
@@ -438,6 +474,7 @@ export class WhileControlStmt extends Stmt {
   constructor(id: number, nameHint: string = "") {
     super(id, undefined, nameHint);
   }
+
   override getKind(): StmtKind {
     return StmtKind.WhileControlStmt;
   }
@@ -447,6 +484,7 @@ export class ContinueStmt extends Stmt {
   constructor(id: number, nameHint: string = "") {
     super(id, undefined, nameHint);
   }
+
   override getKind(): StmtKind {
     return StmtKind.ContinueStmt;
   }
@@ -456,6 +494,7 @@ export class ArgLoadStmt extends Stmt {
   constructor(argType: PrimitiveType, public argId: number, id: number, nameHint: string = "") {
     super(id, argType, nameHint);
   }
+
   override getKind(): StmtKind {
     return StmtKind.ArgLoadStmt;
   }
@@ -465,6 +504,7 @@ export class RandStmt extends Stmt {
   constructor(type: PrimitiveType, id: number, nameHint: string = "") {
     super(id, type, nameHint);
   }
+
   override getKind(): StmtKind {
     return StmtKind.RandStmt;
   }
@@ -475,9 +515,11 @@ export class ReturnStmt extends Stmt {
     super(id, undefined, nameHint);
     this.operands = values.slice();
   }
+
   override getKind(): StmtKind {
     return StmtKind.ReturnStmt;
   }
+
   getValues() {
     return this.operands.slice();
   }
@@ -498,12 +540,15 @@ export class AtomicOpStmt extends Stmt {
     super(id, getPointedType(dest), nameHint);
     this.operands = [dest, operand];
   }
+
   override getKind(): StmtKind {
     return StmtKind.AtomicOpStmt;
   }
+
   getDestination() {
     return this.operands[0] as PointerStmt;
   }
+
   getOperand() {
     return this.operands[1];
   }
@@ -515,9 +560,11 @@ export class AtomicLoadStmt extends Stmt {
     super(id, returnType, nameHint);
     this.operands = [ptr];
   }
+
   getPointer() {
     return this.operands[0] as PointerStmt;
   }
+
   override getKind(): StmtKind {
     return StmtKind.AtomicLoadStmt;
   }
@@ -528,12 +575,15 @@ export class AtomicStoreStmt extends Stmt {
     super(id, undefined, nameHint);
     this.operands = [ptr, value];
   }
+
   getPointer() {
     return this.operands[0] as PointerStmt;
   }
+
   getValue() {
     return this.operands[1];
   }
+
   override getKind(): StmtKind {
     return StmtKind.AtomicStoreStmt;
   }
@@ -543,6 +593,7 @@ export class VertexForStmt extends Stmt {
   constructor(public body: Block, id: number, nameHint: string = "") {
     super(id, undefined, nameHint);
   }
+
   override getKind(): StmtKind {
     return StmtKind.VertexForStmt;
   }
@@ -552,6 +603,7 @@ export class FragmentForStmt extends Stmt {
   constructor(public body: Block, id: number, nameHint: string = "") {
     super(id, undefined, nameHint);
   }
+
   override getKind(): StmtKind {
     return StmtKind.FragmentForStmt;
   }
@@ -561,6 +613,7 @@ export class VertexInputStmt extends Stmt {
   constructor(type: PrimitiveType, public location: number, id: number, nameHint: string = "") {
     super(id, type, nameHint);
   }
+
   override getKind(): StmtKind {
     return StmtKind.VertexInputStmt;
   }
@@ -571,9 +624,11 @@ export class VertexOutputStmt extends Stmt {
     super(id, undefined, nameHint);
     this.operands = [value];
   }
+
   override getKind(): StmtKind {
     return StmtKind.VertexOutputStmt;
   }
+
   getValue() {
     return this.operands[0];
   }
@@ -583,6 +638,7 @@ export class FragmentInputStmt extends Stmt {
   constructor(type: PrimitiveType, public location: number, id: number, nameHint: string = "") {
     super(id, type, nameHint);
   }
+
   override getKind(): StmtKind {
     return StmtKind.FragmentInputStmt;
   }
@@ -605,9 +661,11 @@ export class BuiltInOutputStmt extends Stmt {
     super(id, undefined, nameHint);
     this.operands = values.slice();
   }
+
   override getKind(): StmtKind {
     return StmtKind.BuiltInOutputStmt;
   }
+
   getValues() {
     return this.operands.slice();
   }
@@ -643,6 +701,7 @@ export class BuiltInInputStmt extends Stmt {
   constructor(public builtinKind: BuiltInInputKind, id: number, nameHint: string = "") {
     super(id, getBuiltinInputPrimitiveType(builtinKind), nameHint);
   }
+
   override getKind(): StmtKind {
     return StmtKind.BuiltInInputStmt;
   }
@@ -658,9 +717,11 @@ export class FragmentDerivativeStmt extends Stmt {
     super(id, PrimitiveType.f32, nameHint);
     this.operands.push(value);
   }
+
   override getKind(): StmtKind {
     return StmtKind.FragmentDerivativeStmt;
   }
+
   getValue() {
     return this.operands[0];
   }
@@ -670,6 +731,7 @@ export class DiscardStmt extends Stmt {
   constructor(id: number, nameHint: string = "") {
     super(id, undefined, nameHint);
   }
+
   override getKind(): StmtKind {
     return StmtKind.DiscardStmt;
   }
@@ -708,13 +770,17 @@ export class TextureFunctionStmt extends Stmt {
     this.additionalOperandsCount = additionalOperands.length;
     this.operands = coordinates.concat(additionalOperands);
   }
+
   additionalOperandsCount: number = 0;
+
   override getKind(): StmtKind {
     return StmtKind.TextureFunctionStmt;
   }
+
   getCoordinates() {
     return this.operands.slice(0, this.operands.length - this.additionalOperandsCount);
   }
+
   getAdditionalOperands() {
     return this.operands.slice(-this.additionalOperandsCount);
   }
@@ -725,9 +791,11 @@ export class CompositeExtractStmt extends Stmt {
     super(id, composite.returnType, nameHint);
     this.operands = [composite];
   }
+
   override getKind(): StmtKind {
     return StmtKind.CompositeExtractStmt;
   }
+
   getComposite() {
     return this.operands[0];
   }
@@ -739,8 +807,10 @@ export class Block {
 
 export class IRModule {
   constructor() {}
+
   block: Block = new Block();
   idBound: number = 0;
+
   getNewId() {
     return this.idBound++;
   }

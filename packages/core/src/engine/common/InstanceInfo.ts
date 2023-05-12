@@ -1,12 +1,12 @@
-import { struct } from "../../api/Types";
-import { i32 } from "../../api/Kernels";
+import * as ti from "../../";
 
 export class InstanceInfo {
   constructor(public nodeIndex: number = 0, public materialIndex: number = 0) {}
+
   static getKernelType() {
-    return struct({
-      nodeIndex: i32,
-      materialIndex: i32
+    return ti.types.struct({
+      nodeIndex: ti.i32,
+      materialIndex: ti.i32
     });
   }
 }

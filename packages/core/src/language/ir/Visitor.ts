@@ -45,11 +45,13 @@ export abstract class IRVisitor {
   visitModule(module: IRModule) {
     this.visitBlock(module.block);
   }
+
   visitBlock(block: Block) {
     for (let s of block.stmts) {
       this.visit(s);
     }
   }
+
   visit(stmt: Stmt) {
     switch (stmt.getKind()) {
       case StmtKind.ConstStmt:
@@ -161,50 +163,85 @@ export abstract class IRVisitor {
         error("unrecognized stmt: ", stmt);
     }
   }
+
   visitConstStmt(stmt: ConstStmt) {}
+
   visitRangeForStmt(stmt: RangeForStmt) {
     this.visitBlock(stmt.body);
   }
+
   visitLoopIndexStmt(stmt: LoopIndexStmt) {}
+
   visitAllocaStmt(stmt: AllocaStmt) {}
+
   visitLocalLoadStmt(stmt: LocalLoadStmt) {}
+
   visitLocalStoreStmt(stmt: LocalStoreStmt) {}
+
   visitGlobalPtrStmt(stmt: GlobalPtrStmt) {}
+
   visitGlobalLoadStmt(stmt: GlobalLoadStmt) {}
+
   visitGlobalStoreStmt(stmt: GlobalStoreStmt) {}
+
   visitGlobalTemporaryStmt(stmt: GlobalTemporaryStmt) {}
+
   visitGlobalTemporaryLoadStmt(stmt: GlobalTemporaryLoadStmt) {}
+
   visitGlobalTemporaryStoreStmt(stmt: GlobalTemporaryStoreStmt) {}
+
   visitBinaryOpStmt(stmt: BinaryOpStmt) {}
+
   visitUnaryOpStmt(stmt: UnaryOpStmt) {}
+
   visitWhileStmt(stmt: WhileStmt) {
     this.visitBlock(stmt.body);
   }
+
   visitIfStmt(stmt: IfStmt) {
     this.visitBlock(stmt.trueBranch);
     this.visitBlock(stmt.falseBranch);
   }
+
   visitWhileControlStmt(stmt: WhileControlStmt) {}
+
   visitContinueStmt(stmt: ContinueStmt) {}
+
   visitArgLoadStmt(stmt: ArgLoadStmt) {}
+
   visitRandStmt(stmt: RandStmt) {}
+
   visitReturnStmt(stmt: ReturnStmt) {}
+
   visitAtomicOpStmt(stmt: AtomicOpStmt) {}
+
   visitAtomicLoadStmt(stmt: AtomicLoadStmt) {}
+
   visitAtomicStoreStmt(stmt: AtomicStoreStmt) {}
+
   visitVertexForStmt(stmt: VertexForStmt) {
     this.visitBlock(stmt.body);
   }
+
   visitFragmentForStmt(stmt: FragmentForStmt) {
     this.visitBlock(stmt.body);
   }
+
   visitVertexInputStmt(stmt: VertexInputStmt) {}
+
   visitVertexOutputStmt(stmt: VertexOutputStmt) {}
+
   visitFragmentInputStmt(stmt: FragmentInputStmt) {}
+
   visitBuiltInOutputStmt(stmt: BuiltInOutputStmt) {}
+
   visitBuiltInInputStmt(stmt: BuiltInInputStmt) {}
+
   visitFragmentDerivativeStmt(stmt: FragmentDerivativeStmt) {}
+
   visitDiscardStmt(stmt: DiscardStmt) {}
+
   visitTextureFunctionStmt(stmt: TextureFunctionStmt) {}
+
   visitCompositeExtractStmt(stmt: CompositeExtractStmt) {}
 }

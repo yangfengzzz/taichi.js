@@ -1,8 +1,6 @@
 import { error } from "../../../utils/Logging";
 import { PrimitiveType } from "../../frontend/Type";
 import {
-  WhileStmt,
-  IfStmt,
   VertexForStmt,
   FragmentForStmt,
   RangeForStmt,
@@ -28,6 +26,7 @@ class IdentifyAllocasUsedInParallelForsPass extends IRVisitor {
   inParallelLoop: boolean = false;
 
   thisOffloadSerialAllocas: Set<Stmt> = new Set<Stmt>();
+
   maybeAllocateGtemp(alloca: AllocaStmt) {
     if (!this.thisOffloadSerialAllocas.has(alloca) && !this.gtempsAllocation.has(alloca)) {
       let offset = this.gtempsAllocation.size + this.nextAvailableGtemp;
@@ -52,6 +51,7 @@ class IdentifyAllocasUsedInParallelForsPass extends IRVisitor {
       this.thisOffloadSerialAllocas.clear();
     }
   }
+
   override visitVertexForStmt(stmt: VertexForStmt) {
     this.inParallelLoop = true;
     this.thisOffloadSerialAllocas.clear();
@@ -59,6 +59,7 @@ class IdentifyAllocasUsedInParallelForsPass extends IRVisitor {
     this.inParallelLoop = false;
     this.thisOffloadSerialAllocas.clear();
   }
+
   override visitFragmentForStmt(stmt: FragmentForStmt) {
     this.inParallelLoop = true;
     this.thisOffloadSerialAllocas.clear();
@@ -66,25 +67,31 @@ class IdentifyAllocasUsedInParallelForsPass extends IRVisitor {
     this.inParallelLoop = false;
     this.thisOffloadSerialAllocas.clear();
   }
+
   override visitAllocaStmt(stmt: AllocaStmt): void {
     this.thisOffloadSerialAllocas.add(stmt);
   }
+
   override visitLocalLoadStmt(stmt: LocalLoadStmt): void {
     this.maybeAllocateGtemp(stmt.getPointer());
   }
+
   override visitLocalStoreStmt(stmt: LocalStoreStmt): void {
     this.maybeAllocateGtemp(stmt.getPointer());
   }
+
   override visitAtomicOpStmt(stmt: AtomicOpStmt): void {
     if (stmt.getDestination().getKind() === StmtKind.AllocaStmt) {
       this.maybeAllocateGtemp(stmt.getDestination() as AllocaStmt);
     }
   }
+
   override visitAtomicLoadStmt(stmt: AtomicLoadStmt): void {
     if (stmt.getPointer().getKind() === StmtKind.AllocaStmt) {
       this.maybeAllocateGtemp(stmt.getPointer() as AllocaStmt);
     }
   }
+
   override visitAtomicStoreStmt(stmt: AtomicStoreStmt): void {
     if (stmt.getPointer().getKind() === StmtKind.AllocaStmt) {
       this.maybeAllocateGtemp(stmt.getPointer() as AllocaStmt);
@@ -94,9 +101,11 @@ class IdentifyAllocasUsedInParallelForsPass extends IRVisitor {
 
 class ReplaceAllocasUsedInParallelForsPass extends IRTransformer {
   replacer: DelayedStmtReplacer = new DelayedStmtReplacer();
+
   constructor(public gtempsAllocation: Map<Stmt, number>) {
     super();
   }
+
   maybeGetReplacementGtemp(stmt: AllocaStmt) {
     if (this.gtempsAllocation.has(stmt)) {
       let gtempId = this.gtempsAllocation.get(stmt)!;
@@ -105,6 +114,7 @@ class ReplaceAllocasUsedInParallelForsPass extends IRTransformer {
     }
     return undefined;
   }
+
   override visitLocalLoadStmt(stmt: LocalLoadStmt): void {
     let gtemp = this.maybeGetReplacementGtemp(stmt.getPointer());
     if (gtemp) {
@@ -116,6 +126,7 @@ class ReplaceAllocasUsedInParallelForsPass extends IRTransformer {
       this.pushNewStmt(stmt);
     }
   }
+
   override visitLocalStoreStmt(stmt: LocalStoreStmt): void {
     let gtemp = this.maybeGetReplacementGtemp(stmt.getPointer());
     if (gtemp) {
@@ -126,6 +137,7 @@ class ReplaceAllocasUsedInParallelForsPass extends IRTransformer {
       this.pushNewStmt(stmt);
     }
   }
+
   override visitAtomicOpStmt(stmt: AtomicOpStmt): void {
     if (stmt.getDestination().getKind() === StmtKind.AllocaStmt) {
       let alloca = stmt.getDestination() as AllocaStmt;
@@ -140,6 +152,7 @@ class ReplaceAllocasUsedInParallelForsPass extends IRTransformer {
     }
     this.pushNewStmt(stmt);
   }
+
   override visitAtomicLoadStmt(stmt: AtomicLoadStmt): void {
     if (stmt.getPointer().getKind() === StmtKind.AllocaStmt) {
       let alloca = stmt.getPointer() as AllocaStmt;
@@ -154,6 +167,7 @@ class ReplaceAllocasUsedInParallelForsPass extends IRTransformer {
     }
     this.pushNewStmt(stmt);
   }
+
   override visitAtomicStoreStmt(stmt: AtomicStoreStmt): void {
     if (stmt.getPointer().getKind() === StmtKind.AllocaStmt) {
       let alloca = stmt.getPointer() as AllocaStmt;
@@ -167,6 +181,7 @@ class ReplaceAllocasUsedInParallelForsPass extends IRTransformer {
     }
     this.pushNewStmt(stmt);
   }
+
   override transform(module: IRModule): void {
     super.transform(module);
     this.replacer.transform(module);
@@ -193,11 +208,13 @@ class IdentifyValuesUsedInParallelForsPass extends IRVisitor {
       this.inParallelLoop = false;
     }
   }
+
   override visitVertexForStmt(stmt: VertexForStmt) {
     this.inParallelLoop = true;
     super.visitVertexForStmt(stmt);
     this.inParallelLoop = false;
   }
+
   override visitFragmentForStmt(stmt: FragmentForStmt) {
     this.inParallelLoop = true;
     super.visitFragmentForStmt(stmt);
@@ -236,11 +253,13 @@ class ReplaceValuesUsedInParallelForsPass extends IRTransformer {
       this.inParallelLoop = false;
     }
   }
+
   override visitVertexForStmt(stmt: VertexForStmt) {
     this.inParallelLoop = true;
     super.visitVertexForStmt(stmt);
     this.inParallelLoop = false;
   }
+
   override visitFragmentForStmt(stmt: FragmentForStmt) {
     this.inParallelLoop = true;
     super.visitFragmentForStmt(stmt);
@@ -275,6 +294,7 @@ class LoopRangeGtempPass extends IRTransformer {
   constructor(public nextGtempSlot: number) {
     super();
   }
+
   override visitRangeForStmt(stmt: RangeForStmt) {
     if (stmt.isParallelFor) {
       let range = stmt.getRange();
@@ -294,6 +314,7 @@ class LoopRangeGtempPass extends IRTransformer {
     }
     super.visitRangeForStmt(stmt);
   }
+
   override visitVertexForStmt(stmt: RangeForStmt) {
     if (stmt.isParallelFor) {
       let range = stmt.getRange();

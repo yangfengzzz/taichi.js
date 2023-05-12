@@ -1,6 +1,5 @@
+import * as ti from "../";
 import { error } from "../utils/Logging";
-import { struct, vector } from "../api/Types";
-import { f32, i32 } from "../api/Kernels";
 
 export enum VertexAttrib {
   None = 0,
@@ -19,12 +18,15 @@ export enum VertexAttrib {
 
 export class VertexAttribSet {
   constructor(public val: number) {}
+
   test(attrib: VertexAttrib): boolean {
     return (this.val & (attrib as number)) != 0;
   }
+
   set(attrib: VertexAttrib) {
     this.val |= attrib as number;
   }
+
   foreach(f: (attrib: VertexAttrib) => any) {
     let curr = 1;
     while (curr < VertexAttrib.Max) {
@@ -64,7 +66,7 @@ export function getVertexAttribSetKernelType(attribs: VertexAttribSet) {
   let typeObj: any = {};
   attribs.foreach((attr: VertexAttrib) => {
     let numComponents = getVertexAttribNumComponents(attr);
-    let vecType = vector(f32, numComponents);
+    let vecType = ti.types.vector(ti.f32, numComponents);
     switch (attr) {
       case VertexAttrib.Position:
         typeObj["position"] = vecType;
@@ -85,7 +87,7 @@ export function getVertexAttribSetKernelType(attribs: VertexAttribSet) {
         typeObj["color"] = vecType;
         break;
       case VertexAttrib.Joints:
-        typeObj["joints"] = vector(i32, numComponents);
+        typeObj["joints"] = ti.types.vector(ti.i32, numComponents);
         break;
       case VertexAttrib.Weights:
         typeObj["weights"] = vecType;
@@ -94,7 +96,7 @@ export function getVertexAttribSetKernelType(attribs: VertexAttribSet) {
         error("vert attr is None or All");
     }
   });
-  return struct(typeObj);
+  return ti.types.struct(typeObj);
 }
 
 export class Vertex {
@@ -103,6 +105,7 @@ export class Vertex {
       this.ensureAttrib(attr);
     });
   }
+
   setAttribValue(attrib: VertexAttrib, value: number[]) {
     switch (attrib) {
       case VertexAttrib.Position: {
@@ -141,14 +144,17 @@ export class Vertex {
         error("setAttribValue called on None or All");
     }
   }
+
   ensureAttrib(attrib: VertexAttrib) {
     let numComponents = getVertexAttribNumComponents(attrib);
     let zeros = Array(numComponents).fill(0);
     this.setAttribValue(attrib, zeros);
   }
+
   ensureAttribs(attribs: VertexAttribSet) {
     attribs.foreach((attr) => this.ensureAttrib(attr));
   }
+
   position: number[] | null = null;
   normal: number[] | null = null;
   tangent: number[] | null = null;

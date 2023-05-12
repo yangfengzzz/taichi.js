@@ -16,6 +16,7 @@ import { DelayedStmtReplacer } from "./Replacer";
 
 class DemoteAtomicsPass extends IRTransformer {
   replacer = new DelayedStmtReplacer();
+
   override visitAtomicOpStmt(stmt: AtomicOpStmt) {
     if (stmt.getDestination().getKind() !== StmtKind.AllocaStmt) {
       this.pushNewStmt(stmt);
@@ -47,6 +48,7 @@ class DemoteAtomicsPass extends IRTransformer {
     this.replacer.markReplace(stmt, binaryOpStmt);
     this.pushNewStmt(new LocalStoreStmt(dest, binaryOpStmt, this.module.getNewId()));
   }
+
   override visitAtomicLoadStmt(stmt: AtomicLoadStmt) {
     if (stmt.getPointer().getKind() !== StmtKind.AllocaStmt) {
       this.pushNewStmt(stmt);
@@ -56,6 +58,7 @@ class DemoteAtomicsPass extends IRTransformer {
     let load = this.pushNewStmt(new LocalLoadStmt(ptr, this.module.getNewId()));
     this.replacer.markReplace(stmt, load);
   }
+
   override visitAtomicStoreStmt(stmt: AtomicStoreStmt) {
     if (stmt.getPointer().getKind() !== StmtKind.AllocaStmt) {
       this.pushNewStmt(stmt);
@@ -65,6 +68,7 @@ class DemoteAtomicsPass extends IRTransformer {
     let value = stmt.getValue();
     this.pushNewStmt(new AtomicStoreStmt(ptr, value, this.module.getNewId()));
   }
+
   override transform(module: IRModule): void {
     super.transform(module);
     this.replacer.transform(module);

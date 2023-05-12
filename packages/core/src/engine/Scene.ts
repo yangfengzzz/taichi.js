@@ -1,3 +1,4 @@
+import * as ti from "../";
 import { Field } from "../data/Field";
 import { Material } from "./Material";
 import { getVertexAttribSetKernelType, Vertex, VertexAttrib, VertexAttribSet } from "./Vertex";
@@ -8,8 +9,6 @@ import { LightInfo } from "./common/LightInfo";
 import { HdrTexture } from "./loaders/HDRLoader";
 import { GltfLoader } from "./loaders/GLTFLoader";
 import { ShadowInfo } from "./common/ShadowInfo";
-import { field } from "../api/Fields";
-import { i32 } from "../api/Kernels";
 
 export interface SceneData {
   vertexBuffer: Field; // Field of Vertex
@@ -47,22 +46,22 @@ export class Scene {
   vertexAttribSet: VertexAttribSet = new VertexAttribSet(VertexAttrib.None);
 
   async getKernelData(): Promise<SceneData> {
-    let vertexBuffer = field(getVertexAttribSetKernelType(this.vertexAttribSet), this.vertices.length);
+    let vertexBuffer = ti.field(getVertexAttribSetKernelType(this.vertexAttribSet), this.vertices.length);
     await vertexBuffer.fromArray(this.vertices);
 
-    let indexBuffer = field(i32, this.indices.length);
+    let indexBuffer = ti.field(ti.i32, this.indices.length);
     await indexBuffer.fromArray(this.indices);
 
-    let materialInfoBuffer = field(new Material(0).getInfoKernelType(), this.materials.length);
+    let materialInfoBuffer = ti.field(new Material(0).getInfoKernelType(), this.materials.length);
     let infosHost = this.materials.map((mat) => mat.getInfo());
     await materialInfoBuffer.fromArray(infosHost);
 
-    let nodesBuffer: Field = field(SceneNode.getKernelType(), this.nodes.length);
+    let nodesBuffer: Field = ti.field(SceneNode.getKernelType(), this.nodes.length);
     await nodesBuffer.fromArray(this.nodes);
 
     let lightsInfoBuffer: Field | undefined = undefined;
     if (this.lights.length > 0) {
-      lightsInfoBuffer = field(LightInfo.getKernelType(), this.lights.length);
+      lightsInfoBuffer = ti.field(LightInfo.getKernelType(), this.lights.length);
       await lightsInfoBuffer.fromArray(this.lights);
     }
 

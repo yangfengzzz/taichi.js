@@ -271,6 +271,7 @@ export class VoidType extends Type {
   constructor() {
     super();
   }
+
   override getCategory(): TypeCategory {
     return TypeCategory.Void;
   }
@@ -291,6 +292,7 @@ export class FunctionType extends Type {
   constructor() {
     super();
   }
+
   override getCategory(): TypeCategory {
     return TypeCategory.Function;
   }
@@ -309,6 +311,7 @@ export class HostObjectReferenceType extends Type {
   constructor(public markedAsStatic: boolean) {
     super();
   }
+
   override getCategory(): TypeCategory {
     return TypeCategory.HostObjectReference;
   }
@@ -400,9 +403,11 @@ export class TypeUtils {
 
 export class TypeError {
   private constructor(public hasError: boolean, public msg: string = "") {}
+
   public static createNoError() {
     return new TypeError(false);
   }
+
   public static createError(msg: string) {
     return new TypeError(true, msg);
   }

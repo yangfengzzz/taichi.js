@@ -59,6 +59,7 @@ export class InMemoryHost implements tsCompilerHost {
   public useCaseSensitiveFileNames(): boolean {
     return true;
   }
+
   public getNewLine(): string {
     return "\n";
   }
@@ -95,6 +96,7 @@ export class InMemoryHost implements tsCompilerHost {
     log(`fileExists(${fileName})`);
     return this.fs.fileExists(fileName);
   }
+
   public readFile(fileName: string): string {
     log(`readFile(${fileName})`);
     return this.fs.readFile(fileName);

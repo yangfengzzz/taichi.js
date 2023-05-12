@@ -27,11 +27,16 @@ export function getTextureCoordsNumComponents(dim: TextureDimensionality): numbe
 
 export abstract class TextureBase {
   abstract getGPUTextureFormat(): GPUTextureFormat;
+
   abstract canUseAsRengerTarget(): boolean;
+
   abstract getGPUTexture(): GPUTexture;
+
   abstract getGPUTextureView(): GPUTextureView;
+
   abstract getGPUSampler(): GPUSampler; // TODO rethink this... samplers and texture probably should be decoupled?
   abstract getTextureDimensionality(): TextureDimensionality;
+
   textureId: number = -1;
   sampleCount: number = 1;
 }
@@ -182,6 +187,7 @@ export class CanvasTexture extends TextureBase {
       );
     }
   }
+
   multiSampledRenderTexture: GPUTexture | null = null;
   context: GPUCanvasContext;
   format: GPUTextureFormat;
@@ -245,12 +251,15 @@ export class DepthTexture extends TextureBase {
   getGPUTexture(): GPUTexture {
     return this.texture;
   }
+
   getTextureDimensionality(): TextureDimensionality {
     return TextureDimensionality.Dim2d;
   }
+
   getGPUTextureView(): GPUTextureView {
     return this.textureView;
   }
+
   getGPUSampler(): GPUSampler {
     return this.sampler;
   }
@@ -289,15 +298,19 @@ export class CubeTexture extends TextureBase {
   getGPUTexture(): GPUTexture {
     return this.texture;
   }
+
   getTextureDimensionality(): TextureDimensionality {
     return TextureDimensionality.DimCube;
   }
+
   getGPUTextureView(): GPUTextureView {
     return this.textureView;
   }
+
   getGPUSampler(): GPUSampler {
     return this.sampler;
   }
+
   static async createFromBitmap(bitmaps: ImageBitmap[]): Promise<CubeTexture> {
     for (let bitmap of bitmaps) {
       assert(
@@ -311,6 +324,7 @@ export class CubeTexture extends TextureBase {
     await Program.getCurrentProgram().runtime!.copyImageBitmapsToCubeTexture(bitmaps, texture.getGPUTexture());
     return texture;
   }
+
   static async createFromHtmlImage(images: HTMLImageElement[]): Promise<CubeTexture> {
     let bitmaps: ImageBitmap[] = [];
     for (let img of images) {
@@ -318,6 +332,7 @@ export class CubeTexture extends TextureBase {
     }
     return await this.createFromBitmap(bitmaps);
   }
+
   static async createFromURL(urls: string[]): Promise<CubeTexture> {
     let imgs: HTMLImageElement[] = [];
     for (let url of urls) {

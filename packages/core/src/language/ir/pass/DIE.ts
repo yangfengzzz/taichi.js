@@ -1,14 +1,4 @@
-import {
-  GlobalLoadStmt,
-  GlobalTemporaryStoreStmt,
-  IfStmt,
-  IRModule,
-  LocalStoreStmt,
-  ReturnStmt,
-  Stmt,
-  StmtKind,
-  WhileStmt
-} from "../Stmt";
+import { IRModule, Stmt, StmtKind } from "../Stmt";
 import { IRTransformer } from "../Transformer";
 import { IRVisitor } from "../Visitor";
 
@@ -16,7 +6,9 @@ class IdentifyUsefulInstructions extends IRVisitor {
   constructor() {
     super();
   }
+
   public usefulInstructions: Set<Stmt> = new Set<Stmt>();
+
   override visit(stmt: Stmt): void {
     let kind = stmt.getKind();
     if (
@@ -70,6 +62,7 @@ class EliminatePass extends IRTransformer {
   constructor(public usefulInstructions: Set<Stmt>) {
     super();
   }
+
   override visit(stmt: Stmt): void {
     if (!this.usefulInstructions.has(stmt)) {
       return;

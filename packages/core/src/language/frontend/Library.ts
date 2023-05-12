@@ -1,18 +1,6 @@
-import { func } from "../../api/Kernels";
-import { matrix, vector } from "../../api/Types";
-import {
-  bitcast_f32,
-  bitcast_i32,
-  cross,
-  dot,
-  matmul,
-  normalized,
-  range,
-  rsqrt,
-  transpose
-} from "../../api/KernelScopeBuiltin";
+import * as ti from "../../";
 
-let polarDecompose2D = func((A: matrix) => {
+let polarDecompose2D = ti.func((A: ti.types.matrix) => {
   let x = A[0][0] + A[1][1];
   let y = A[1][0] - A[0][1];
   let scale = 1.0 / Math.sqrt(x * x + y * y);
@@ -24,12 +12,12 @@ let polarDecompose2D = func((A: matrix) => {
   ];
   return {
     U: r,
-    P: matmul(transpose(r), A)
+    P: ti.matmul(ti.transpose(r), A)
   };
 });
 
-let svd2D = func((A: matrix) => {
-  let RS = polarDecompose2D(A);
+let svd2D = ti.func((A: ti.types.matrix) => {
+  let RS = ti.polarDecompose2D(A);
   let R = RS.U;
   let S = RS.P;
   let c = 0.0;
@@ -78,7 +66,7 @@ let svd2D = func((A: matrix) => {
       [-s, c]
     ];
   }
-  result.U = matmul(R, result.V);
+  result.U = ti.matmul(R, result.V);
   result.E = [
     [s1, 0.0],
     [0.0, s2]
@@ -86,7 +74,7 @@ let svd2D = func((A: matrix) => {
   return result;
 });
 
-let svd3D = func((A: matrix) => {
+let svd3D = ti.func((A: ti.types.matrix) => {
   let a00 = A[0][0];
   let a01 = A[0][1];
   let a02 = A[0][2];
@@ -100,9 +88,9 @@ let svd3D = func((A: matrix) => {
   let xffffffff = -1;
 
   //@ts-ignore
-  let Ti = (x: any) => i32(x);
+  let Ti = (x: any) => ti.i32(x);
   //@ts-ignore
-  let int32 = (x: any) => i32(x);
+  let int32 = (x: any) => ti.i32(x);
   let expr_select = (c: any, x: any, y: any) => {
     let result = x;
     if (!c) {
@@ -111,13 +99,13 @@ let svd3D = func((A: matrix) => {
     return result;
   };
   let svd_bitwise_or = (f1: number, f2: number) => {
-    return bitcast_f32(bitcast_i32(f1) | bitcast_i32(f2));
+    return ti.bitcast_f32(ti.bitcast_i32(f1) | ti.bitcast_i32(f2));
   };
   let svd_bitwise_xor = (f1: number, f2: number) => {
-    return bitcast_f32(bitcast_i32(f1) ^ bitcast_i32(f2));
+    return ti.bitcast_f32(ti.bitcast_i32(f1) ^ ti.bitcast_i32(f2));
   };
   let svd_bitwise_and = (f1: number, f2: number) => {
-    return bitcast_f32(bitcast_i32(f1) & bitcast_i32(f2));
+    return ti.bitcast_f32(ti.bitcast_i32(f1) & ti.bitcast_i32(f2));
   };
 
   let Four_Gamma_Squared = 5.82842712474619;
@@ -227,32 +215,32 @@ let svd3D = func((A: matrix) => {
   Ss33 = Stmp1 + Ss33;
   Stmp1 = Sa33 * Sa33;
   Ss33 = Stmp1 + Ss33;
-  for (let iter of range(5)) {
+  for (let iter of ti.range(5)) {
     Ssh = Ss21 * Sone_half;
     Stmp5 = Ss11 - Ss22;
     Stmp2 = Ssh * Ssh;
 
-    Stmp1 = bitcast_f32(expr_select(Stmp2 >= Stiny_number, xffffffff, 0));
+    Stmp1 = ti.bitcast_f32(expr_select(Stmp2 >= Stiny_number, xffffffff, 0));
     Ssh = svd_bitwise_and(Stmp1, Ssh);
     Sch = svd_bitwise_and(Stmp1, Stmp5);
 
-    Stmp2 = svd_bitwise_and(normalized(bitcast_i32(Stmp1)), Sone);
+    Stmp2 = svd_bitwise_and(ti.not(ti.bitcast_i32(Stmp1)), Sone);
     Sch = svd_bitwise_or(Sch, Stmp2);
     Stmp1 = Ssh * Ssh;
     Stmp2 = Sch * Sch;
     Stmp3 = Stmp1 + Stmp2;
-    Stmp4 = rsqrt(Stmp3);
+    Stmp4 = ti.rsqrt(Stmp3);
     Ssh = Stmp4 * Ssh;
     Sch = Stmp4 * Sch;
     Stmp1 = Sfour_gamma_squared * Stmp1;
-    Stmp1 = bitcast_f32(expr_select(Stmp2 <= Stmp1, xffffffff, 0));
+    Stmp1 = ti.bitcast_f32(expr_select(Stmp2 <= Stmp1, xffffffff, 0));
 
     Stmp2 = svd_bitwise_and(Ssine_pi_over_eight, Stmp1);
 
-    Ssh = svd_bitwise_and(~bitcast_i32(Stmp1), Ssh);
+    Ssh = svd_bitwise_and(~ti.bitcast_i32(Stmp1), Ssh);
     Ssh = svd_bitwise_or(Ssh, Stmp2);
     Stmp2 = svd_bitwise_and(Scosine_pi_over_eight, Stmp1);
-    Sch = svd_bitwise_and(~bitcast_i32(Stmp1), Sch);
+    Sch = svd_bitwise_and(~ti.bitcast_i32(Stmp1), Sch);
     Sch = svd_bitwise_or(Sch, Stmp2);
     Stmp1 = Ssh * Ssh;
     Stmp2 = Sch * Sch;
@@ -303,30 +291,30 @@ let svd3D = func((A: matrix) => {
     Stmp5 = Ss22 - Ss33;
     Stmp2 = Ssh * Ssh;
 
-    Stmp1 = bitcast_f32(expr_select(Stmp2 >= Stiny_number, xffffffff, 0));
+    Stmp1 = ti.bitcast_f32(expr_select(Stmp2 >= Stiny_number, xffffffff, 0));
     Ssh = svd_bitwise_and(Stmp1, Ssh);
     Sch = svd_bitwise_and(Stmp1, Stmp5);
 
-    Stmp2 = svd_bitwise_and(~bitcast_i32(Stmp1), Sone);
+    Stmp2 = svd_bitwise_and(~ti.bitcast_i32(Stmp1), Sone);
     Sch = svd_bitwise_or(Sch, Stmp2);
     Stmp1 = Ssh * Ssh;
     Stmp2 = Sch * Sch;
     Stmp3 = Stmp1 + Stmp2;
-    Stmp4 = rsqrt(Stmp3);
+    Stmp4 = ti.rsqrt(Stmp3);
     Ssh = Stmp4 * Ssh;
     Sch = Stmp4 * Sch;
     Stmp1 = Sfour_gamma_squared * Stmp1;
 
-    Stmp1 = bitcast_f32(expr_select(Stmp2 <= Stmp1, xffffffff, 0));
+    Stmp1 = ti.bitcast_f32(expr_select(Stmp2 <= Stmp1, xffffffff, 0));
 
     Stmp2 = svd_bitwise_and(Ssine_pi_over_eight, Stmp1);
 
-    Ssh = svd_bitwise_and(~bitcast_i32(Stmp1), Ssh);
+    Ssh = svd_bitwise_and(~ti.bitcast_i32(Stmp1), Ssh);
     Ssh = svd_bitwise_or(Ssh, Stmp2);
 
     Stmp2 = svd_bitwise_and(Scosine_pi_over_eight, Stmp1);
 
-    Sch = svd_bitwise_and(~bitcast_i32(Stmp1), Sch);
+    Sch = svd_bitwise_and(~ti.bitcast_i32(Stmp1), Sch);
     Sch = svd_bitwise_or(Sch, Stmp2);
     Stmp1 = Ssh * Ssh;
     Stmp2 = Sch * Sch;
@@ -377,30 +365,30 @@ let svd3D = func((A: matrix) => {
     Stmp5 = Ss33 - Ss11;
     Stmp2 = Ssh * Ssh;
 
-    Stmp1 = bitcast_f32(expr_select(Stmp2 >= Stiny_number, xffffffff, 0));
+    Stmp1 = ti.bitcast_f32(expr_select(Stmp2 >= Stiny_number, xffffffff, 0));
     Ssh = svd_bitwise_and(Stmp1, Ssh);
     Sch = svd_bitwise_and(Stmp1, Stmp5);
 
-    Stmp2 = svd_bitwise_and(~bitcast_i32(Stmp1), Sone);
+    Stmp2 = svd_bitwise_and(~ti.bitcast_i32(Stmp1), Sone);
     Sch = svd_bitwise_or(Sch, Stmp2);
     Stmp1 = Ssh * Ssh;
     Stmp2 = Sch * Sch;
     Stmp3 = Stmp1 + Stmp2;
-    Stmp4 = rsqrt(Stmp3);
+    Stmp4 = ti.rsqrt(Stmp3);
     Ssh = Stmp4 * Ssh;
     Sch = Stmp4 * Sch;
     Stmp1 = Sfour_gamma_squared * Stmp1;
 
-    Stmp1 = bitcast_f32(expr_select(Stmp2 <= Stmp1, xffffffff, 0));
+    Stmp1 = ti.bitcast_f32(expr_select(Stmp2 <= Stmp1, xffffffff, 0));
 
     Stmp2 = svd_bitwise_and(Ssine_pi_over_eight, Stmp1);
 
-    Ssh = svd_bitwise_and(~bitcast_i32(Stmp1), Ssh);
+    Ssh = svd_bitwise_and(~ti.bitcast_i32(Stmp1), Ssh);
     Ssh = svd_bitwise_or(Ssh, Stmp2);
 
     Stmp2 = svd_bitwise_and(Scosine_pi_over_eight, Stmp1);
 
-    Sch = svd_bitwise_and(~bitcast_i32(Stmp1), Sch);
+    Sch = svd_bitwise_and(~ti.bitcast_i32(Stmp1), Sch);
     Sch = svd_bitwise_or(Sch, Stmp2);
     Stmp1 = Ssh * Ssh;
     Stmp2 = Sch * Sch;
@@ -455,7 +443,7 @@ let svd3D = func((A: matrix) => {
   Stmp2 = Stmp1 + Stmp2;
   Stmp1 = Sqvvz * Sqvvz;
   Stmp2 = Stmp1 + Stmp2;
-  Stmp1 = rsqrt(Stmp2);
+  Stmp1 = ti.rsqrt(Stmp2);
   Stmp4 = Stmp1 * Sone_half;
   Stmp3 = Stmp1 * Stmp4;
   Stmp3 = Stmp1 * Stmp3;
@@ -560,7 +548,7 @@ let svd3D = func((A: matrix) => {
   Stmp4 = Sa33 * Sa33;
   Stmp3 = Stmp3 + Stmp4;
 
-  Stmp4 = bitcast_f32(expr_select(Stmp1 < Stmp2, xffffffff, 0));
+  Stmp4 = ti.bitcast_f32(expr_select(Stmp1 < Stmp2, xffffffff, 0));
   Stmp5 = svd_bitwise_xor(Sa11, Sa12);
   Stmp5 = svd_bitwise_and(Stmp5, Stmp4);
   Sa11 = svd_bitwise_xor(Sa11, Stmp5);
@@ -600,7 +588,7 @@ let svd3D = func((A: matrix) => {
   Sv22 = Sv22 * Stmp4;
   Sv32 = Sv32 * Stmp4;
 
-  Stmp4 = bitcast_f32(expr_select(Stmp1 < Stmp3, xffffffff, 0));
+  Stmp4 = ti.bitcast_f32(expr_select(Stmp1 < Stmp3, xffffffff, 0));
   Stmp5 = svd_bitwise_xor(Sa11, Sa13);
   Stmp5 = svd_bitwise_and(Stmp5, Stmp4);
   Sa11 = svd_bitwise_xor(Sa11, Stmp5);
@@ -640,7 +628,7 @@ let svd3D = func((A: matrix) => {
   Sv21 = Sv21 * Stmp4;
   Sv31 = Sv31 * Stmp4;
 
-  Stmp4 = bitcast_f32(expr_select(Stmp2 < Stmp3, xffffffff, 0));
+  Stmp4 = ti.bitcast_f32(expr_select(Stmp2 < Stmp3, xffffffff, 0));
   Stmp5 = svd_bitwise_xor(Sa12, Sa13);
   Stmp5 = svd_bitwise_and(Stmp5, Stmp4);
   Sa12 = svd_bitwise_xor(Sa12, Stmp5);
@@ -690,18 +678,18 @@ let svd3D = func((A: matrix) => {
   Su33 = 1.0;
   Ssh = Sa21 * Sa21;
 
-  Ssh = bitcast_f32(expr_select(Ssh >= Ssmall_number, xffffffff, 0));
+  Ssh = ti.bitcast_f32(expr_select(Ssh >= Ssmall_number, xffffffff, 0));
   Ssh = svd_bitwise_and(Ssh, Sa21);
   Stmp5 = 0.0;
   Sch = Stmp5 - Sa11;
   Sch = Math.max(Sch, Sa11);
   Sch = Math.max(Sch, Ssmall_number);
 
-  Stmp5 = bitcast_f32(expr_select(Sa11 >= Stmp5, xffffffff, 0));
+  Stmp5 = ti.bitcast_f32(expr_select(Sa11 >= Stmp5, xffffffff, 0));
   Stmp1 = Sch * Sch;
   Stmp2 = Ssh * Ssh;
   Stmp2 = Stmp1 + Stmp2;
-  Stmp1 = rsqrt(Stmp2);
+  Stmp1 = ti.rsqrt(Stmp2);
   Stmp4 = Stmp1 * Sone_half;
   Stmp3 = Stmp1 * Stmp4;
   Stmp3 = Stmp1 * Stmp3;
@@ -711,9 +699,9 @@ let svd3D = func((A: matrix) => {
   Stmp1 = Stmp1 * Stmp2;
   Sch = Sch + Stmp1;
 
-  Stmp1 = svd_bitwise_and(~bitcast_i32(Stmp5), Ssh);
+  Stmp1 = svd_bitwise_and(~ti.bitcast_i32(Stmp5), Ssh);
 
-  Stmp2 = svd_bitwise_and(~bitcast_i32(Stmp5), Sch);
+  Stmp2 = svd_bitwise_and(~ti.bitcast_i32(Stmp5), Sch);
   Sch = svd_bitwise_and(Stmp5, Sch);
   Ssh = svd_bitwise_and(Stmp5, Ssh);
   Sch = svd_bitwise_or(Sch, Stmp1);
@@ -721,7 +709,7 @@ let svd3D = func((A: matrix) => {
   Stmp1 = Sch * Sch;
   Stmp2 = Ssh * Ssh;
   Stmp2 = Stmp1 + Stmp2;
-  Stmp1 = rsqrt(Stmp2);
+  Stmp1 = ti.rsqrt(Stmp2);
   Stmp4 = Stmp1 * Sone_half;
   Stmp3 = Stmp1 * Stmp4;
   Stmp3 = Stmp1 * Stmp3;
@@ -773,18 +761,18 @@ let svd3D = func((A: matrix) => {
   Su32 = Su32 - Stmp1;
   Ssh = Sa31 * Sa31;
 
-  Ssh = bitcast_f32(expr_select(Ssh >= Ssmall_number, xffffffff, 0));
+  Ssh = ti.bitcast_f32(expr_select(Ssh >= Ssmall_number, xffffffff, 0));
   Ssh = svd_bitwise_and(Ssh, Sa31);
   Stmp5 = 0.0;
   Sch = Stmp5 - Sa11;
   Sch = Math.max(Sch, Sa11);
   Sch = Math.max(Sch, Ssmall_number);
 
-  Stmp5 = bitcast_f32(expr_select(Sa11 >= Stmp5, xffffffff, 0));
+  Stmp5 = ti.bitcast_f32(expr_select(Sa11 >= Stmp5, xffffffff, 0));
   Stmp1 = Sch * Sch;
   Stmp2 = Ssh * Ssh;
   Stmp2 = Stmp1 + Stmp2;
-  Stmp1 = rsqrt(Stmp2);
+  Stmp1 = ti.rsqrt(Stmp2);
   Stmp4 = Stmp1 * Sone_half;
   Stmp3 = Stmp1 * Stmp4;
   Stmp3 = Stmp1 * Stmp3;
@@ -794,9 +782,9 @@ let svd3D = func((A: matrix) => {
   Stmp1 = Stmp1 * Stmp2;
   Sch = Sch + Stmp1;
 
-  Stmp1 = svd_bitwise_and(~bitcast_i32(Stmp5), Ssh);
+  Stmp1 = svd_bitwise_and(~ti.bitcast_i32(Stmp5), Ssh);
 
-  Stmp2 = svd_bitwise_and(~bitcast_i32(Stmp5), Sch);
+  Stmp2 = svd_bitwise_and(~ti.bitcast_i32(Stmp5), Sch);
   Sch = svd_bitwise_and(Stmp5, Sch);
   Ssh = svd_bitwise_and(Stmp5, Ssh);
   Sch = svd_bitwise_or(Sch, Stmp1);
@@ -804,7 +792,7 @@ let svd3D = func((A: matrix) => {
   Stmp1 = Sch * Sch;
   Stmp2 = Ssh * Ssh;
   Stmp2 = Stmp1 + Stmp2;
-  Stmp1 = rsqrt(Stmp2);
+  Stmp1 = ti.rsqrt(Stmp2);
   Stmp4 = Stmp1 * Sone_half;
   Stmp3 = Stmp1 * Stmp4;
   Stmp3 = Stmp1 * Stmp3;
@@ -856,18 +844,18 @@ let svd3D = func((A: matrix) => {
   Su33 = Su33 - Stmp1;
   Ssh = Sa32 * Sa32;
 
-  Ssh = bitcast_f32(expr_select(Ssh >= Ssmall_number, xffffffff, 0));
+  Ssh = ti.bitcast_f32(expr_select(Ssh >= Ssmall_number, xffffffff, 0));
   Ssh = svd_bitwise_and(Ssh, Sa32);
   Stmp5 = 0.0;
   Sch = Stmp5 - Sa22;
   Sch = Math.max(Sch, Sa22);
   Sch = Math.max(Sch, Ssmall_number);
 
-  Stmp5 = bitcast_f32(expr_select(Sa22 >= Stmp5, xffffffff, 0));
+  Stmp5 = ti.bitcast_f32(expr_select(Sa22 >= Stmp5, xffffffff, 0));
   Stmp1 = Sch * Sch;
   Stmp2 = Ssh * Ssh;
   Stmp2 = Stmp1 + Stmp2;
-  Stmp1 = rsqrt(Stmp2);
+  Stmp1 = ti.rsqrt(Stmp2);
   Stmp4 = Stmp1 * Sone_half;
   Stmp3 = Stmp1 * Stmp4;
   Stmp3 = Stmp1 * Stmp3;
@@ -877,9 +865,9 @@ let svd3D = func((A: matrix) => {
   Stmp1 = Stmp1 * Stmp2;
   Sch = Sch + Stmp1;
 
-  Stmp1 = svd_bitwise_and(~bitcast_i32(Stmp5), Ssh);
+  Stmp1 = svd_bitwise_and(~ti.bitcast_i32(Stmp5), Ssh);
 
-  Stmp2 = svd_bitwise_and(~bitcast_i32(Stmp5), Sch);
+  Stmp2 = svd_bitwise_and(~ti.bitcast_i32(Stmp5), Sch);
   Sch = svd_bitwise_and(Stmp5, Sch);
   Ssh = svd_bitwise_and(Stmp5, Ssh);
   Sch = svd_bitwise_or(Sch, Stmp1);
@@ -887,7 +875,7 @@ let svd3D = func((A: matrix) => {
   Stmp1 = Sch * Sch;
   Stmp2 = Ssh * Ssh;
   Stmp2 = Stmp1 + Stmp2;
-  Stmp1 = rsqrt(Stmp2);
+  Stmp1 = ti.rsqrt(Stmp2);
   Stmp4 = Stmp1 * Sone_half;
   Stmp3 = Stmp1 * Stmp4;
   Stmp3 = Stmp1 * Stmp3;
@@ -957,15 +945,15 @@ let svd3D = func((A: matrix) => {
   };
 });
 
-let lookAt = func((eye: vector, center: vector, up: vector) => {
-  let z = normalized(eye - center);
-  let x = normalized(cross(up, z));
-  let y = normalized(cross(z, x));
-  let result = [x.concat([-dot(x, eye)]), y.concat([-dot(y, eye)]), z.concat([-dot(z, eye)]), [0, 0, 0, 1]];
+let lookAt = ti.func((eye: ti.types.vector, center: ti.types.vector, up: ti.types.vector) => {
+  let z = ti.normalized(eye - center);
+  let x = ti.normalized(ti.cross(up, z));
+  let y = ti.normalized(ti.cross(z, x));
+  let result = [x.concat([-ti.dot(x, eye)]), y.concat([-ti.dot(y, eye)]), z.concat([-ti.dot(z, eye)]), [0, 0, 0, 1]];
   return result;
 });
 
-let perspective = func((fovy: number, aspect: number, zNear: number, zFar: number) => {
+let perspective = ti.func((fovy: number, aspect: number, zNear: number, zFar: number) => {
   let rad = (fovy * Math.PI) / 180.0;
   let tanHalfFovy = Math.tan(rad / 2.0);
 
@@ -980,7 +968,7 @@ let perspective = func((fovy: number, aspect: number, zNear: number, zFar: numbe
   return result;
 });
 
-let ortho = func((left: number, right: number, bottom: number, top: number, zNear: number, zFar: number) => {
+let ortho = ti.func((left: number, right: number, bottom: number, top: number, zNear: number, zFar: number) => {
   let zero4 = [0.0, 0.0, 0.0, 0.0];
   let result = [zero4, zero4, zero4, zero4];
   result[0][0] = 2.0 / (right - left);
@@ -993,7 +981,7 @@ let ortho = func((left: number, right: number, bottom: number, top: number, zNea
   return result;
 });
 
-let inverse = func((m: matrix) => {
+let inverse = ti.func((m: ti.types.matrix) => {
   let det =
     m[0][0] * (m[1][1] * m[2][2] - m[2][1] * m[1][2]) -
     m[0][1] * (m[1][0] * m[2][2] - m[1][2] * m[2][0]) +
@@ -1018,11 +1006,11 @@ let inverse = func((m: matrix) => {
   return minv;
 });
 
-let rotateAxisAngle = func((axis: vector, angle: number) => {
+let rotateAxisAngle = ti.func((axis: ti.types.vector, angle: number) => {
   let a = angle;
   let c = Math.cos(a);
   let s = Math.sin(a);
-  let temp: vector = (1.0 - c) * axis;
+  let temp: ti.types.vector = (1.0 - c) * axis;
 
   let m = [
     [1.0, 0.0, 0.0, 0.0],
@@ -1044,7 +1032,7 @@ let rotateAxisAngle = func((axis: vector, angle: number) => {
   return m;
 });
 
-let translate = func((t: vector) => {
+let translate = ti.func((t: ti.types.vector) => {
   return [
     [1.0, 0.0, 0.0, t[0]],
     [0.0, 1.0, 0.0, t[1]],
@@ -1053,7 +1041,7 @@ let translate = func((t: vector) => {
   ];
 });
 
-let scale = func((t: vector) => {
+let scale = ti.func((t: ti.types.vector) => {
   return [
     [t[0], 0.0, 0.0, 0.0],
     [0.0, t[1], 0.0, 0.0],

@@ -1,6 +1,5 @@
 import { matmul } from "../api/KernelScopeBuiltin";
-import { matrix, struct } from "../api/Types";
-import { f32 } from "../api/Kernels";
+import * as ti from "../";
 
 export class Transform {
   constructor(matrix?: number[][]) {
@@ -9,6 +8,7 @@ export class Transform {
       this.matrix = matrix;
     }
   }
+
   reset() {
     this.matrix = [
       [1, 0, 0, 0],
@@ -17,6 +17,7 @@ export class Transform {
       [0, 0, 0, 1]
     ];
   }
+
   matrix: number[][] = [];
 
   mul(other: Transform) {
@@ -26,8 +27,8 @@ export class Transform {
   }
 
   static getKernelType() {
-    return struct({
-      matrix: matrix(f32, 4, 4)
+    return ti.types.struct({
+      matrix: ti.types.matrix(ti.f32, 4, 4)
     });
   }
 }

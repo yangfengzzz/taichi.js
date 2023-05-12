@@ -1,15 +1,17 @@
 import { Transform } from "./Transform";
-import { struct } from "../api/Types";
+import * as ti from "../";
 
 export class SceneNode {
   constructor() {}
+
   parent: number = -1;
   children: number[] = [];
   localTransform: Transform = new Transform();
   globalTransform: Transform = new Transform();
   mesh: number = -1;
+
   static getKernelType() {
-    return struct({
+    return ti.types.struct({
       globalTransform: Transform.getKernelType()
     });
   }

@@ -114,9 +114,11 @@ export class KernelParams {
 export class CompiledTask {
   pipeline: GPUComputePipeline | null = null;
   bindGroup: GPUBindGroup | null = null;
+
   constructor(public params: TaskParams, runtime: Runtime) {
     this.createPipeline(runtime);
   }
+
   createPipeline(runtime: Runtime) {
     let code = this.params.code;
     this.pipeline = runtime.getGPUComputePipeline({
@@ -132,6 +134,7 @@ export class CompiledTask {
 export class CompiledRenderPipeline {
   pipeline: GPURenderPipeline | null = null;
   bindGroup: GPUBindGroup | null = null;
+
   constructor(public params: RenderPipelineParams, renderPassParams: RenderPassParams, runtime: Runtime) {
     this.createPipeline(runtime, renderPassParams);
   }
@@ -162,6 +165,7 @@ export class CompiledRenderPipeline {
       attributes: attrs
     };
   }
+
   private getGPUColorTargetStates(renderPassParams: RenderPassParams): GPUColorTargetState[] {
     let result: GPUColorTargetState[] = [];
     for (let tex of renderPassParams.colorAttachments) {
@@ -171,6 +175,7 @@ export class CompiledRenderPipeline {
     }
     return result;
   }
+
   getVertexCount(): number {
     if (this.params.indexBuffer) {
       return this.params.indexBuffer.dimensions[0];
@@ -178,6 +183,7 @@ export class CompiledRenderPipeline {
       return this.params.vertexBuffer!.dimensions[0];
     }
   }
+
   createPipeline(runtime: Runtime, renderPassParams: RenderPassParams) {
     let sampleCount = 1;
     if (renderPassParams.colorAttachments.length > 0) {

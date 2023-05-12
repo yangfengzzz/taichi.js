@@ -1944,9 +1944,11 @@ class CompilingVisitor extends ASTVisitor<Value> {
     }
     this.errorNode(node, "unsupported for-of initializer ");
   }
+
   protected override visitForInStatement(node: ts.ForInStatement): VisitorResult<Value> {
     this.errorNode(node, "Please use `for ... of ...` instead of  `for ... in ...`");
   }
+
   protected override visitForStatement(node: ts.ForStatement): VisitorResult<Value> {
     this.errorNode(node, "Please use `for ... of ...` instead of  arbitrary for loops");
   }
@@ -2068,6 +2070,7 @@ export class InliningCompiler extends CompilingVisitor {
     return true;
   }
 }
+
 export class KernelCompiler extends CompilingVisitor {
   constructor() {
     let irBuilder = new IRBuilder();

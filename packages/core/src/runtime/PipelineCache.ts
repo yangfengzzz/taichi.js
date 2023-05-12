@@ -1,6 +1,8 @@
 export class PipelineCache {
   constructor(public device: GPUDevice) {}
+
   private shaderModuleCache: Map<string, GPUShaderModule> = new Map<string, GPUShaderModule>();
+
   getOrCreateShaderModule(code: string): GPUShaderModule {
     if (!this.shaderModuleCache.has(code)) {
       let module = this.device!.createShaderModule({

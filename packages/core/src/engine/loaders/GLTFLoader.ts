@@ -285,6 +285,7 @@ class BufferView {
     public byteLength: number,
     public byteStride: number | undefined = undefined
   ) {}
+
   static fromBuffer(
     buffer: Buffer,
     byteOffset: number,
@@ -294,6 +295,7 @@ class BufferView {
     let dataView = new Uint8Array(buffer.arrayBuffer, byteOffset, byteLength).slice();
     return new BufferView(dataView, byteOffset, byteLength, byteStride);
   }
+
   static fromData(
     dataView: Uint8Array,
     byteOffset: number,

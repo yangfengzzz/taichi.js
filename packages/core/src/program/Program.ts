@@ -1,8 +1,7 @@
 import { Runtime } from "../runtime/Runtime";
 import { SNodeTree } from "../data/SNodeTree";
 import { Scope } from "../language/frontend/Scope";
-import { DepthTexture, TextureBase } from "../data/Texture";
-import { PrimitiveType } from "../language/frontend/Type";
+import { TextureBase } from "../data/Texture";
 
 export interface ProgramOptions {
   printIR: boolean;
@@ -14,6 +13,7 @@ export class Program {
     printIR: false,
     printWGSL: false
   };
+
   async init(options?: ProgramOptions) {
     if (options && options.printIR !== undefined) {
       this.options.printIR = options.printIR;
@@ -31,6 +31,7 @@ export class Program {
   kernelScope: Scope;
 
   private static instance: Program;
+
   private constructor() {
     this.partialTree = new SNodeTree();
     this.partialTree.treeId = 0;
@@ -81,11 +82,13 @@ export class Program {
   }
 
   private nextAnonymousKernel = 0;
+
   getAnonymousKernelName(): string {
     return "anonymous_" + (this.nextAnonymousKernel++).toString();
   }
 
   private nextFunction = 0;
+
   getNextFunctionID(): string {
     return "anonymous_" + (this.nextAnonymousKernel++).toString();
   }

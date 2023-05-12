@@ -3,8 +3,8 @@
 
 import { DepthTexture, TextureBase } from "../data/Texture";
 import { assert, error } from "../utils/Logging";
+import * as ti from "../";
 import { Field } from "../data/Field";
-import { matrix, struct, vector } from "./Types";
 
 let throwNotImplementedError = () => {
   error("This function is only implemented in taichi kernel scope!");
@@ -18,7 +18,7 @@ export function range(n: number): number[] {
   return result;
 }
 
-export function ndrange(...args: number[]): vector[] {
+export function ndrange(...args: number[]): ti.types.vector[] {
   if (args.length === 0) {
     return [[]];
   }
@@ -49,10 +49,10 @@ export function inputFragments(): any[] {
 }
 
 function broadCastableMathOp(
-  a: number | vector,
-  b: number | vector,
+  a: number | ti.types.vector,
+  b: number | ti.types.vector,
   op: (a: number, b: number) => number
-): number | vector {
+): number | ti.types.vector {
   if (typeof a === "number" && typeof b === "number") {
     return op(a, b);
   }
@@ -74,7 +74,7 @@ function broadCastableMathOp(
   return 0.0;
 }
 
-export function neg(a: number | vector): number | vector {
+export function neg(a: number | ti.types.vector): number | ti.types.vector {
   if (typeof a === "number") {
     return -a;
   } else {
@@ -82,23 +82,23 @@ export function neg(a: number | vector): number | vector {
   }
 }
 
-export function add(a: number | vector, b: number | vector): number | vector {
+export function add(a: number | ti.types.vector, b: number | ti.types.vector): number | ti.types.vector {
   return broadCastableMathOp(a, b, (a: number, b: number) => a + b);
 }
 
-export function sub(a: number | vector, b: number | vector): number | vector {
+export function sub(a: number | ti.types.vector, b: number | ti.types.vector): number | ti.types.vector {
   return broadCastableMathOp(a, b, (a: number, b: number) => a - b);
 }
 
-export function mul(a: number | vector, b: number | vector): number | vector {
+export function mul(a: number | ti.types.vector, b: number | ti.types.vector): number | ti.types.vector {
   return broadCastableMathOp(a, b, (a: number, b: number) => a * b);
 }
 
-export function div(a: number | vector, b: number | vector): number | vector {
+export function div(a: number | ti.types.vector, b: number | ti.types.vector): number | ti.types.vector {
   return broadCastableMathOp(a, b, (a: number, b: number) => a / b);
 }
 
-export function norm_sqr(v: vector): number {
+export function norm_sqr(v: ti.types.vector): number {
   let result = 0;
   for (let x of v) {
     result += x * x;
@@ -106,15 +106,15 @@ export function norm_sqr(v: vector): number {
   return result;
 }
 
-export function norm(v: vector): number {
+export function norm(v: ti.types.vector): number {
   return Math.sqrt(norm_sqr(v));
 }
 
-export function normalized(v: vector): vector {
-  return div(v, norm(v)) as vector;
+export function normalized(v: ti.types.vector): ti.types.vector {
+  return div(v, norm(v)) as ti.types.vector;
 }
 
-export function dot(a: vector, b: vector): number {
+export function dot(a: ti.types.vector, b: ti.types.vector): number {
   assert(a.length === b.length, "vector size mismatch");
   let sum = 0;
   for (let i = 0; i < a.length; ++i) {
@@ -123,7 +123,7 @@ export function dot(a: vector, b: vector): number {
   return sum;
 }
 
-export function cross(a: vector, b: vector): vector {
+export function cross(a: ti.types.vector, b: ti.types.vector): ti.types.vector {
   assert(a.length === 3 && b.length === 3, "vector size must be 3");
   let result = [0, 0, 0];
   result[0] = a[1] * b[2] - a[2] * b[1];
@@ -132,9 +132,9 @@ export function cross(a: vector, b: vector): vector {
   return result;
 }
 
-export function matmul(a: matrix | vector, b: vector): matrix | vector {
+export function matmul(a: ti.types.matrix | ti.types.vector, b: ti.types.vector): ti.types.matrix | ti.types.vector {
   if (Array.isArray(b[0])) {
-    b = b as matrix;
+    b = b as ti.types.matrix;
     let result: any = [];
     assert(a[0].length === b.length, "matrix size mismatch");
     for (let i = 0; i < a.length; ++i) {
@@ -151,7 +151,7 @@ export function matmul(a: matrix | vector, b: vector): matrix | vector {
     return result;
   } else {
     let result: any = [];
-    b = b as vector;
+    b = b as ti.types.vector;
     assert(a[0].length === b.length, "matrix size mismatch");
     for (let i = 0; i < a.length; ++i) {
       let e = 0;
@@ -164,7 +164,7 @@ export function matmul(a: matrix | vector, b: vector): matrix | vector {
   }
 }
 
-export function transpose(m: matrix): matrix {
+export function transpose(m: ti.types.matrix): ti.types.matrix {
   let R = m.length;
   let C = m[0].length;
 
@@ -179,7 +179,7 @@ export function transpose(m: matrix): matrix {
   return result;
 }
 
-export function inverse(m: matrix): matrix {
+export function inverse(m: ti.types.matrix): ti.types.matrix {
   let det =
     m[0][0] * (m[1][1] * m[2][2] - m[2][1] * m[1][2]) -
     m[0][1] * (m[1][0] * m[2][2] - m[1][2] * m[2][0]) +
@@ -204,7 +204,7 @@ export function inverse(m: matrix): matrix {
   return minv;
 }
 
-export function polarDecompose2D(A: matrix) {
+export function polarDecompose2D(A: ti.types.matrix) {
   let x = A[0][0] + A[1][1];
   let y = A[1][0] - A[0][1];
   let scale = 1.0 / Math.sqrt(x * x + y * y);
@@ -216,48 +216,58 @@ export function polarDecompose2D(A: matrix) {
   ];
   return {
     U: r,
-    P: matmul(transpose(r), A)
+    P: ti.matmul(ti.transpose(r), A)
   };
 }
 
 export function outputVertex(vertex: any) {
   throwNotImplementedError();
 }
+
 export function outputPosition(pos: any) {
   throwNotImplementedError();
 }
+
 export function clearColor(tex: TextureBase, col: any) {
   throwNotImplementedError();
 }
+
 export function useDepth(depth: DepthTexture, depthOptions?: { storeDepth?: boolean; clearDepth?: boolean }) {
   throwNotImplementedError();
 }
+
 export function outputColor(tex: TextureBase, col: any) {
   throwNotImplementedError();
 }
+
 export function outputDepth(depth: number) {
   throwNotImplementedError();
 }
+
 export function discard() {
   throwNotImplementedError();
 }
 
-export function textureSample(texture: TextureBase, coords: any): vector {
+export function textureSample(texture: TextureBase, coords: any): ti.types.vector {
   throwNotImplementedError();
   return [0.0, 0.0, 0.0, 0.0];
 }
-export function textureSampleLod(texture: TextureBase, coords: any, lod: number): vector {
+
+export function textureSampleLod(texture: TextureBase, coords: any, lod: number): ti.types.vector {
   throwNotImplementedError();
   return [0.0, 0.0, 0.0, 0.0];
 }
-export function textureSampleCompare(texture: DepthTexture, coords: any, depthReference: number): vector {
+
+export function textureSampleCompare(texture: DepthTexture, coords: any, depthReference: number): ti.types.vector {
   throwNotImplementedError();
   return 0.0;
 }
-export function textureLoad(texture: TextureBase, coords: any): vector {
+
+export function textureLoad(texture: TextureBase, coords: any): ti.types.vector {
   throwNotImplementedError();
   return [0.0, 0.0, 0.0, 0.0];
 }
+
 export function textureStore(texture: TextureBase, coords: any, val: any) {
   throwNotImplementedError();
 }
@@ -266,26 +276,29 @@ export function getVertexIndex(): number {
   throwNotImplementedError();
   return 0;
 }
+
 export function getInstanceIndex(): number {
   throwNotImplementedError();
   return 0;
 }
-export function getFragCoord(): vector {
+
+export function getFragCoord(): ti.types.vector {
   throwNotImplementedError();
   return [0.0, 0.0, 0.0, 0.0];
 }
 
-export function dpdx(val: number | vector): number | vector {
-  throwNotImplementedError();
-  return 0;
-}
-export function dpdy(val: number | vector): number | vector {
+export function dpdx(val: number | ti.types.vector): number | ti.types.vector {
   throwNotImplementedError();
   return 0;
 }
 
-export function lookAt(eye: vector, center: vector, up: vector) {
-  let z = normalized(sub(eye, center) as vector);
+export function dpdy(val: number | ti.types.vector): number | ti.types.vector {
+  throwNotImplementedError();
+  return 0;
+}
+
+export function lookAt(eye: ti.types.vector, center: ti.types.vector, up: ti.types.vector) {
+  let z = normalized(sub(eye, center) as ti.types.vector);
   let x = normalized(cross(up, z));
   let y = normalized(cross(z, x));
   let result = [x.concat([-dot(x, eye)]), y.concat([-dot(y, eye)]), z.concat([-dot(z, eye)]), [0, 0, 0, 1]];
@@ -320,11 +333,11 @@ export function ortho(left: number, right: number, bottom: number, top: number, 
   return result;
 }
 
-export function rotateAxisAngle(axis: vector, angle: number): matrix {
+export function rotateAxisAngle(axis: ti.types.vector, angle: number): ti.types.matrix {
   let a = angle;
   let c = Math.cos(a);
   let s = Math.sin(a);
-  let temp: vector = mul(1.0 - c, axis);
+  let temp: ti.types.vector = ti.mul(1.0 - c, axis);
 
   let m = [
     [1.0, 0.0, 0.0, 0.0],
@@ -346,7 +359,7 @@ export function rotateAxisAngle(axis: vector, angle: number): matrix {
   return m;
 }
 
-export function translate(t: vector): matrix {
+export function translate(t: ti.types.vector): ti.types.matrix {
   return [
     [1.0, 0.0, 0.0, t[0]],
     [0.0, 1.0, 0.0, t[1]],
@@ -355,7 +368,7 @@ export function translate(t: vector): matrix {
   ];
 }
 
-export function scale(t: vector): matrix {
+export function scale(t: ti.types.vector): ti.types.matrix {
   return [
     [t[0], 0.0, 0.0, 0.0],
     [0.0, t[1], 0.0, 0.0],
@@ -364,8 +377,8 @@ export function scale(t: vector): matrix {
   ];
 }
 
-export function mergeStructs(a: struct, b: struct): struct {
-  let result: struct = {};
+export function mergeStructs(a: ti.types.struct, b: ti.types.struct): ti.types.struct {
+  let result: ti.types.struct = {};
   for (let k in a) {
     result[k] = a[k];
   }
@@ -375,22 +388,22 @@ export function mergeStructs(a: struct, b: struct): struct {
   return result;
 }
 
-export function bitcast_i32(number: number | vector): number | vector {
+export function bitcast_i32(number: number | ti.types.vector): number | ti.types.vector {
   throwNotImplementedError();
   return number;
 }
 
-export function bitcast_f32(number: number | vector): number | vector {
+export function bitcast_f32(number: number | ti.types.vector): number | ti.types.vector {
   throwNotImplementedError();
   return number;
 }
 
-export function not(number: number | vector): number | vector {
+export function not(number: number | ti.types.vector): number | ti.types.vector {
   throwNotImplementedError();
   return number;
 }
 
-export function rsqrt(number: number | vector): number | vector {
+export function rsqrt(number: number | ti.types.vector): number | ti.types.vector {
   throwNotImplementedError();
   return number;
 }

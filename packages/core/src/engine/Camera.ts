@@ -1,6 +1,4 @@
-import { matrix, struct, vector } from "../api/Types";
-import { add, lookAt, matmul, mul, normalized, perspective } from "../api/KernelScopeBuiltin";
-import { f32 } from "../api/Kernels";
+import * as ti from "../";
 
 export class Camera {
   constructor(
@@ -11,32 +9,34 @@ export class Camera {
     public near: number = 0.1,
     public far: number = 1000
   ) {}
+
   public view: number[][] = [];
   public projection: number[][] = [];
   public viewProjection: number[][] = [];
 
   computeMatrices(aspectRatio: number) {
-    this.view = lookAt(this.position, add(this.position, this.direction), this.up);
-    this.projection = perspective(this.fov, aspectRatio, this.near, this.far);
-    this.viewProjection = matmul(this.projection, this.view);
+    this.view = ti.lookAt(this.position, ti.add(this.position, this.direction), this.up);
+    this.projection = ti.perspective(this.fov, aspectRatio, this.near, this.far);
+    this.viewProjection = ti.matmul(this.projection, this.view);
   }
 
   static getKernelType(): any {
-    return struct({
-      position: vector(f32, 3),
-      direction: vector(f32, 3),
-      up: vector(f32, 3),
-      fov: f32,
-      near: f32,
-      far: f32,
-      view: matrix(f32, 4, 4),
-      projection: matrix(f32, 4, 4),
-      viewProjection: matrix(f32, 4, 4)
+    return ti.types.struct({
+      position: ti.types.vector(ti.f32, 3),
+      direction: ti.types.vector(ti.f32, 3),
+      up: ti.types.vector(ti.f32, 3),
+      fov: ti.f32,
+      near: ti.f32,
+      far: ti.f32,
+      view: ti.types.matrix(ti.f32, 4, 4),
+      projection: ti.types.matrix(ti.f32, 4, 4),
+      viewProjection: ti.types.matrix(ti.f32, 4, 4)
     });
   }
+
   track(canvas: HTMLCanvasElement, yawSpeed: number = 2, pitchSpeed: number = 2, movementSpeed: number = 0.01) {
     let vecToEuler = (v: number[]) => {
-      v = normalized(v);
+      v = ti.normalized(v);
       let pitch = Math.asin(v[1]);
       let sinYaw = -v[0] / Math.cos(pitch);
       let cosYaw = -v[2] / Math.cos(pitch);
@@ -78,7 +78,7 @@ export class Camera {
         let dx = currX - lastX;
         let dy = currY - lastY;
 
-        let [yaw, pitch] = vecToEuler(normalized(this.direction));
+        let [yaw, pitch] = vecToEuler(ti.normalized(this.direction));
         yaw += dx * yawSpeed;
         pitch += dy * pitchSpeed;
 
@@ -96,7 +96,7 @@ export class Camera {
       }
     };
     canvas.onwheel = (ev: WheelEvent) => {
-      this.position = add(this.position, mul(this.direction, -ev.deltaY * movementSpeed));
+      this.position = ti.add(this.position, ti.mul(this.direction, -ev.deltaY * movementSpeed));
     };
   }
 }

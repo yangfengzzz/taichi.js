@@ -8,9 +8,11 @@ export class ResultOrError<T> {
       assert(result !== null && errorMessage === null);
     }
   }
+
   public static createResult<Y>(result: Y): ResultOrError<Y> {
     return new ResultOrError<Y>(false, result, null);
   }
+
   public static createError<Y>(msg: string): ResultOrError<Y> {
     return new ResultOrError<Y>(true, null, msg);
   }

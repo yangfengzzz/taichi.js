@@ -5,7 +5,6 @@ import {
   VectorType,
   MatrixType,
   PointerType,
-  VoidType,
   PrimitiveType,
   TypeUtils,
   StructType,
@@ -29,6 +28,7 @@ export class Value {
   hostSideValue: any = undefined;
 
   private type_: Type;
+
   getType(): Type {
     return this.type_;
   }

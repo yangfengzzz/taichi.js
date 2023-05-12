@@ -11,7 +11,6 @@ export function field(
   if (type === PrimitiveType.f32 || type === PrimitiveType.i32) {
     type = new ScalarType(type);
   }
-
   if (typeof dimensions === "number") {
     dimensions = [dimensions];
   }

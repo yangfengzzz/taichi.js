@@ -1,5 +1,5 @@
 import { Program } from "../program/Program";
-import { PrimitiveType } from "../language/frontend/Type";
+import { PrimitiveType, ScalarType, Type } from "../language/frontend/Type";
 import { KernelFactory, Template } from "../language/frontend/KernelFactory";
 
 export function addToKernelScope(obj: any) {

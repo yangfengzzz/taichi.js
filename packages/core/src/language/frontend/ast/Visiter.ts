@@ -8,6 +8,7 @@ export class ASTVisitor<T> {
     assert(result !== undefined, "Result is undefined");
     return result as T;
   }
+
   protected dispatchVisit(node: ts.Node): VisitorResult<T> {
     switch (node.kind) {
       case ts.SyntaxKind.VariableDeclaration:

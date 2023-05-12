@@ -556,6 +556,7 @@ export class Runtime {
   getRootBuffer(treeId: number): GPUBuffer {
     return this.materializedTrees[treeId].rootBuffer!;
   }
+
   async copyImageBitmapToTexture(bitmap: ImageBitmap, texture: GPUTexture) {
     let copySource: GPUImageCopyExternalImage = {
       source: bitmap
@@ -570,6 +571,7 @@ export class Runtime {
     this.device!.queue.copyExternalImageToTexture(copySource, copyDest, extent);
     await this.device!.queue.onSubmittedWorkDone();
   }
+
   async copyImageBitmapsToCubeTexture(bitmaps: ImageBitmap[], texture: GPUTexture) {
     for (let i = 0; i < 6; ++i) {
       let bitmap = bitmaps[i];
@@ -588,6 +590,7 @@ export class Runtime {
     }
     await this.device!.queue.onSubmittedWorkDone();
   }
+
   async copyTextureToTexture(src: GPUTexture, dest: GPUTexture, dimensions: number[]) {
     let commandEncoder = this.device!.createCommandEncoder();
     commandEncoder.copyTextureToTexture({ texture: src }, { texture: dest }, dimensions);
@@ -628,7 +631,9 @@ class IndirectDrawCommand {
 
 class IndirectPolyfillInfo {
   constructor(public indirectBuffer: Promise<number[]> | Field, public indirectCount: number | Field) {}
+
   commands: IndirectDrawCommand[] = [];
+
   async fillInfo() {
     if (this.indirectCount instanceof Field) {
       this.indirectCount = (await this.indirectCount.toInt32Array())[0];
