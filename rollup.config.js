@@ -6,7 +6,6 @@ import commonjs from "@rollup/plugin-commonjs";
 import serve from "rollup-plugin-serve";
 import replace from "@rollup/plugin-replace";
 import { swc, defineRollupSwcOption, minify } from "rollup-plugin-swc3";
-import taichi from "./rollup-plugin-taichi/dist/rollup-plugin-taichi.js";
 
 const { BUILD_TYPE, NODE_ENV } = process.env;
 
@@ -28,21 +27,8 @@ const pkgs = fs
 const extensions = [".js", ".jsx", ".ts", ".tsx"];
 const mainFields = NODE_ENV === "development" ? ["debug", "module", "main"] : undefined;
 
-function endWith(str, substr) {
-  return str.slice(-substr.length) === substr;
-}
-
 const commonPlugins = [
-  taichi({
-    exclude: (f) => {
-      return endWith(f, ".js");
-    }
-  }),
   resolve({ extensions, preferBuiltins: true, mainFields }),
-  replace({
-    'require("source-map-support").install()': "",
-    delimiters: ["", ""]
-  }),
   swc(
     defineRollupSwcOption({
       include: /\.[mc]?[jt]sx?$/,
