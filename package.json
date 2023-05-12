@@ -15,9 +15,7 @@
   "module": "./dist/taichi.js",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
-    "test": "cross-env TS_NODE_PROJECT=tsconfig.tests.json floss --path tests -r ts-node/register",
-    "test-debug": "cross-env TS_NODE_PROJECT=tsconfig.tests.json floss --path tests -r ts-node/register --debug",
-    "test-cov": "cross-env TS_NODE_PROJECT=tsconfig.tests.json nyc --reporter=lcov floss --path tests -r ts-node/register",
+    "test": "cd tests && npm run dev",
     "ci": "pnpm install && npm run b:module && npm run b:types && npm run test-cov",
     "lint": "eslint packages/*/src --ext .ts",
     "watch": "cross-env NODE_ENV=development BUILD_TYPE=MODULE rollup -cw -m inline",
