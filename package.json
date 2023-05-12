@@ -15,6 +15,7 @@
   "module": "./dist/taichi.js",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
+    "example": "cd examples && npm run dev",
     "test": "cd tests && npm run dev",
     "ci": "pnpm install && npm run b:module && npm run b:types && npm run test-cov",
     "lint": "eslint packages/*/src --ext .ts",
