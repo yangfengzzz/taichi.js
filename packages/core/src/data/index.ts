@@ -1,0 +1,1 @@
+export { WrapMode } from "./Texture";
