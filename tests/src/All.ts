@@ -75,7 +75,7 @@ export async function runAllTests() {
   passed &&= await testRandom();
   passed &&= await testAtomic();
   passed &&= await testMatrixOps();
-  // passed &&= await testLibraryFuncs();
+  passed &&= await testLibraryFuncs();
   passed &&= await testStaticLoopUnroll();
   passed &&= await testBroadcast();
   passed &&= await testTypes();
