@@ -7,3 +7,4 @@ export { Timer } from "./utils/Timer";
 export * from "./api/KernelScopeBuiltin";
 export * from "./engine/index";
 export * from "./api/Types";
+export { log, error, assert } from "./utils/Logging";
