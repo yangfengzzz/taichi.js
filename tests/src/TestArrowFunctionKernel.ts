@@ -1,5 +1,5 @@
 //@ts-nocheck
-import * as ti from "../taichi";
+import * as ti from "@taichi.js/core";
 import { assertEqual } from "./Utils";
 
 async function testArrowFunctionKernel(): Promise<boolean> {
@@ -11,13 +11,13 @@ async function testArrowFunctionKernel(): Promise<boolean> {
   ti.addToKernelScope({ f });
 
   let kernel = ti.kernel(() => {
-    for (let i of range(10)) {
+    for (let i of ti.range(10)) {
       f[i] = i + i;
     }
-    for (let i of range(10)) {
+    for (let i of ti.range(10)) {
       f[i] = f[i] + i;
     }
-    for (let i of range(10)) {
+    for (let i of ti.range(10)) {
       f[i + 1 - 1] = f[i - 1 + 1] / 3;
     }
   });

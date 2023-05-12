@@ -1,6 +1,6 @@
 //@ts-nocheck
 import { assertEqual } from "./Utils";
-import * as ti from "../taichi";
+import * as ti from "@taichi.js/core";
 
 async function testAtomic(): Promise<boolean> {
   console.log("testAtomic");
@@ -22,16 +22,16 @@ async function testAtomic(): Promise<boolean> {
   ti.addToKernelScope({ f1, f2, f3, i1, i2, i3, n1, n2, n3 });
 
   let kernel = ti.kernel(() => {
-    for (let i of range(n1)) {
+    for (let i of ti.range(n1)) {
       f1[0] += i;
-      atomicAdd(i1[0], i);
+      ti.atomicAdd(i1[0], i);
     }
-    for (let i of range(n2)) {
+    for (let i of ti.range(n2)) {
       let my_index = (f2[0] += 1);
-      i2[i] = i32(my_index);
+      i2[i] = ti.i32(my_index);
     }
-    for (let i of range(n3)) {
-      atomicAdd(f3[0], 1);
+    for (let i of ti.range(n3)) {
+      ti.atomicAdd(f3[0], 1);
       i3[0] += 1;
     }
   });
@@ -69,7 +69,7 @@ async function testAtomic(): Promise<boolean> {
 
   let kernelGtemps = ti.kernel(() => {
     let s = 0.0;
-    for (let i of range(100)) {
+    for (let i of ti.range(100)) {
       s += i;
     }
     return s;

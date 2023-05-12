@@ -1,5 +1,5 @@
 //@ts-nocheck
-import * as ti from "../taichi";
+import * as ti from "@taichi.js/core";
 import { assertEqual } from "./Utils";
 
 async function testNdrange(): Promise<boolean> {
@@ -11,7 +11,6 @@ async function testNdrange(): Promise<boolean> {
   ti.addToKernelScope({ f });
 
   let kernel = ti.kernel(function k() {
-    //@ts-ignore
     for (let I of ndrange(3, 3)) {
       let i = I[0];
       let j = I[1];

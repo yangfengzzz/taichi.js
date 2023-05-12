@@ -1,5 +1,5 @@
 //@ts-nocheck
-import * as ti from "../taichi";
+import * as ti from "@taichi.js/core";
 import { assertEqual } from "./Utils";
 
 async function testVectorComponent(): Promise<boolean> {
@@ -12,13 +12,11 @@ async function testVectorComponent(): Promise<boolean> {
   ti.addToKernelScope({ f, res });
 
   let kernel1 = ti.kernel(() => {
-    //@ts-ignore
     for (let i of range(1)) {
       f[i] = [i + 1, i + 1];
     }
   });
   let kernel2 = ti.kernel(() => {
-    //@ts-ignore
     for (let i of range(1)) {
       let x = f[i] * [2, 3] + [0.5, 0.0];
       x[0] = x[0] * res[0];

@@ -1,5 +1,5 @@
 //@ts-nocheck
-import * as ti from "../taichi";
+import * as ti from "@taichi.js/core";
 import { assertEqual } from "./Utils";
 
 async function testMatrix(): Promise<boolean> {
@@ -12,7 +12,6 @@ async function testMatrix(): Promise<boolean> {
   ti.addToKernelScope({ m, v });
 
   let kernel = ti.kernel(() => {
-    //@ts-ignore
     for (let i of range(2)) {
       for (let j of range(2)) {
         m[[i, j]][[0, 0]] = i * 1000 + j * 100;

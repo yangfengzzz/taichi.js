@@ -1,6 +1,5 @@
 //@ts-nocheck
-import { Field } from "../data/Field";
-import * as ti from "../taichi";
+import * as ti from "@taichi.js/core";
 import { assertEqual } from "./Utils";
 
 async function testClassKernel(): Promise<boolean> {
@@ -9,6 +8,8 @@ async function testClassKernel(): Promise<boolean> {
   await ti.init();
 
   class C {
+    tk: ti.KernelType;
+
     constructor() {
       this.f = ti.field(ti.f32, [1]);
       this.k = ti.classKernel(this, () => {
@@ -24,7 +25,7 @@ async function testClassKernel(): Promise<boolean> {
         }
       );
     }
-    f: Field;
+    f: ti.Field;
     x: number = 3;
     k: (...args: any[]) => any;
   }

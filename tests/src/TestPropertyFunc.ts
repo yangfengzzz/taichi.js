@@ -1,5 +1,5 @@
 //@ts-nocheck
-import * as ti from "../taichi";
+import * as ti from "@taichi.js/core";
 import { assertEqual } from "./Utils";
 
 async function testPropertyFunc(): Promise<boolean> {
@@ -13,7 +13,6 @@ async function testPropertyFunc(): Promise<boolean> {
 
   ti.addToKernelScope({ f, dot_f });
   let kernel = ti.kernel(() => {
-    //@ts-ignore
     let x = [3.0, 4.0];
     f[0] = x.norm();
     f[1] = x.norm_sqr();

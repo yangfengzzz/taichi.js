@@ -1,6 +1,6 @@
 import { assert, error } from "@taichi.js/core";
 
-function assertEqual<T>(actual: any, expected: any, epsilon = 1e-6): boolean {
+export function assertEqual<T>(actual: any, expected: any, epsilon = 1e-6): boolean {
   if (typeof expected === "number") {
     assert(typeof actual === "number", "expecting number");
     if (isNaN(actual) != isNaN(expected) || Math.abs(actual - expected) > epsilon) {
@@ -36,5 +36,3 @@ function assertEqual<T>(actual: any, expected: any, epsilon = 1e-6): boolean {
     return true;
   }
 }
-
-export { assertEqual };

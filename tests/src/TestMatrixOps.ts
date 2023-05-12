@@ -1,5 +1,5 @@
 //@ts-nocheck
-import * as ti from "../taichi";
+import * as ti from "@taichi.js/core";
 import { assertEqual } from "./Utils";
 
 async function testMatrixOps(): Promise<boolean> {
@@ -12,7 +12,6 @@ async function testMatrixOps(): Promise<boolean> {
   ti.addToKernelScope({ f, v });
 
   let kernel = ti.kernel(() => {
-    //@ts-ignore
     let m1 = [
       [1, 2],
       [3, 4]

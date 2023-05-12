@@ -1,4 +1,5 @@
 //@ts-nocheck
+import * as ti from "@taichi.js/core";
 import { assertEqual } from "./Utils";
 
 async function testLibraryFuncs(): Promise<boolean> {

@@ -1,5 +1,5 @@
 //@ts-nocheck
-import * as ti from "../taichi";
+import * as ti from "@taichi.js/core";
 import { assertEqual } from "./Utils";
 
 async function testLocalVar(): Promise<boolean> {
@@ -11,18 +11,15 @@ async function testLocalVar(): Promise<boolean> {
   ti.addToKernelScope({ f });
 
   let kernel = ti.kernel(function k() {
-    //@ts-ignore
     for (let i of range(10)) {
       let j = i + i;
       f[i] = j;
     }
-    //@ts-ignore
     for (let i of range(10)) {
       let j = f[i];
       j = j + i;
       f[i] = j;
     }
-    //@ts-ignore
     for (let i of range(10)) {
       let j = i - 1 + 1;
       j = i32(f[j] / 3);

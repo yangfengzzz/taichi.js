@@ -1,6 +1,7 @@
 //@ts-nocheck
-import * as ti from "../taichi";
+import * as ti from "@taichi.js/core";
 import { assertEqual } from "./Utils";
+
 async function testCopyFieldToHost1D(): Promise<boolean> {
   console.log("testCopyFieldToHost1D");
 

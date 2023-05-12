@@ -1,6 +1,7 @@
 //@ts-nocheck
-import * as ti from "../taichi";
+import * as ti from "@taichi.js/core";
 import { assertEqual } from "./Utils";
+
 async function testMultipleSNodeTree(): Promise<boolean> {
   console.log("testMultipleSNodeTree");
 
@@ -9,7 +10,6 @@ async function testMultipleSNodeTree(): Promise<boolean> {
   let f1 = ti.field(ti.i32, [7]);
   ti.addToKernelScope({ f1 });
   let k1 = ti.kernel(function k1() {
-    //@ts-ignore
     for (let i of range(7)) {
       f1[i] = i;
     }
@@ -21,7 +21,6 @@ async function testMultipleSNodeTree(): Promise<boolean> {
   ti.addToKernelScope({ f1, f2 });
 
   let k2 = ti.kernel(function k2() {
-    //@ts-ignore
     for (let i of range(7)) {
       f2[i] = f1[i] + 1;
     }

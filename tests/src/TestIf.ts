@@ -1,5 +1,5 @@
 //@ts-nocheck
-import * as ti from "../taichi";
+import * as ti from "@taichi.js/core";
 import { assertEqual } from "./Utils";
 
 async function testIf(): Promise<boolean> {
@@ -11,7 +11,6 @@ async function testIf(): Promise<boolean> {
   ti.addToKernelScope({ f });
 
   let kernel = ti.kernel(function k() {
-    //@ts-ignore
     for (let i of range(10)) {
       if (i < 3 || i >= 8) {
         f[i] = i;
